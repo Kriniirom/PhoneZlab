@@ -1,0 +1,37 @@
+[debug] [2026-07-10T17:00:18.547Z] ----------------------------------------------------------------------
+[debug] [2026-07-10T17:00:18.554Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Irom Krinivash\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2026-07-10T17:00:18.554Z] CLI Version:   15.23.0
+[debug] [2026-07-10T17:00:18.554Z] Platform:      win32
+[debug] [2026-07-10T17:00:18.554Z] Node Version:  v24.12.0
+[debug] [2026-07-10T17:00:18.554Z] Detected Agent: unknown
+[debug] [2026-07-10T17:00:18.554Z] Time:          Fri Jul 10 2026 22:30:18 GMT+0530 (India Standard Time)
+[debug] [2026-07-10T17:00:18.554Z] ----------------------------------------------------------------------
+[debug] 
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\program\phonezlap-minimalist-store-&-shopify-exporter (1)
+
+Before we get started, keep in mind:
+
+  * You are currently outside your home directory
+
+[debug] [2026-07-10T17:14:07.705Z] ExitPromptError: User force closed the prompt with SIGINT
+    at Interface.sigint (C:\Users\Irom Krinivash\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\@inquirer\core\dist\commonjs\lib\create-prompt.js:101:37)
+    at Interface.emit (node:events:508:28)
+    at [_ttyWrite] [as _ttyWrite] (node:internal/readline/interface:1327:18)
+    at ReadStream.onkeypress (node:internal/readline/interface:284:20)
+    at ReadStream.emit (node:events:520:35)
+    at emitKeys (node:internal/readline/utils:371:14)
+    at emitKeys.next (<anonymous>)
+    at ReadStream.onData (node:internal/readline/emitKeypressEvents:64:36)
+    at ReadStream.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+[error] 
+[error] Error: An unexpected error has occurred.

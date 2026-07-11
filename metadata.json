@@ -1,0 +1,6 @@
+{
+  "name": "PhoneZlap Minimalist Store & Shopify Exporter",
+  "description": "A luxury e-commerce showcase for accessories with custom branding, smooth animations, dark mode, and an interactive Shopify Liquid & Tailwind CSS template exporter.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

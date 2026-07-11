@@ -1,26 +1,40 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-fk-blue: #2874f0;
+  --color-fk-yellow: #ffc200;
+  --color-fk-bg: #f1f3f6;
+  --color-fk-text: #212121;
+  --color-fk-gray: #878787;
+
+  --font-sans: var(--font-inter);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: var(--color-fk-bg);
+    --foreground: var(--color-fk-text);
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans), sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .fk-card {
+    @apply bg-white rounded shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden;
+  }
+  
+  .fk-button-yellow {
+    @apply bg-[#ffc200] text-black font-semibold px-6 py-2 rounded shadow hover:bg-yellow-500 transition-colors;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
 }

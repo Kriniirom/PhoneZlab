@@ -140,24 +140,28 @@ export function HeroCarousel({ initialDiscounts }: HeroCarouselProps) {
   );
 
   return (
-    <section
-      className={`bg-[#0b1528] text-white overflow-hidden rounded-xl border border-slate-800 shadow-md mx-4 mt-6 relative group transition-all duration-300 animate-fade-in ${bgImage ? "aspect-[2.8/1] sm:aspect-[2.9/1] md:aspect-[3.0/1] lg:aspect-[3.3/1] w-auto h-auto" : "min-h-[220px] md:min-h-[260px] lg:min-h-[300px]"}`}
-      style={{
-        ...(activeSlide.textColor ? { color: activeSlide.textColor } : {}),
-        ...(bgImage ? {
-          backgroundImage: `url(${bgImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
-        } : {})
-      }}
+    <section 
+      className="bg-[#0b1528] text-white overflow-hidden rounded-xl border border-slate-800 shadow-md mx-4 mt-6 relative group transition-all duration-300 animate-fade-in"
+      style={activeSlide.textColor ? { color: activeSlide.textColor } : {}}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {bgImage && !hasText ? (
-        <Link href={activeSlide.buttonUrl || "/collections/all"} className="block w-full h-full cursor-pointer">
-          {slideContent}
-        </Link>
+      {bgImage ? (
+        <div className="relative w-full h-auto block overflow-hidden">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img 
+            src={bgImage} 
+            alt={activeSlide.title || "Promotional Banner"} 
+            className="w-full h-auto block"
+          />
+          {hasText ? (
+            <div className="absolute inset-0 flex items-center justify-start z-10">
+              {slideContent}
+            </div>
+          ) : (
+            <Link href={activeSlide.buttonUrl || "/collections/all"} className="absolute inset-0 z-10 cursor-pointer" />
+          )}
+        </div>
       ) : (
         slideContent
       )}

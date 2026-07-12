@@ -107,6 +107,13 @@ export default function ProfilePage() {
   return (
     <main className="min-h-[80vh] bg-[#f1f3f6] py-12 px-4 md:px-8">
       <div className="max-w-3xl mx-auto">
+        {/* Breadcrumbs */}
+        <div className="flex items-center gap-1.5 text-xs text-[#878787] mb-4">
+          <a href="/" className="hover:text-[#2874f0] transition-colors">Home</a>
+          <span className="text-[#878787] select-none">/</span>
+          <span className="text-gray-900 font-medium">My Profile</span>
+        </div>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -200,18 +207,26 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            {/* Logout Action */}
+            {/* Actions Section */}
             <div className="pt-4 border-t border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
               <p className="text-xs text-gray-400 max-w-md">
                 Securely logs out of this device and terminates the active session on Shopify's authentication servers.
               </p>
-              <button
-                onClick={handleLogout}
-                className="bg-red-500 hover:bg-red-600 text-white font-bold py-2.5 px-6 rounded-md flex items-center justify-center gap-2 hover:scale-[1.01] transition-all cursor-pointer shadow-sm text-sm"
-              >
-                <LogOut className="w-4 h-4" />
-                Sign Out
-              </button>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => router.push("/")}
+                  className="bg-white border border-gray-300 hover:border-gray-400 text-gray-700 font-bold py-2.5 px-6 rounded-md flex items-center justify-center gap-2 hover:bg-gray-50 hover:scale-[1.01] transition-all cursor-pointer shadow-sm text-sm"
+                >
+                  Go to Home
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-2.5 px-6 rounded-md flex items-center justify-center gap-2 hover:scale-[1.01] transition-all cursor-pointer shadow-sm text-sm"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Sign Out
+                </button>
+              </div>
             </div>
           </div>
         </motion.div>

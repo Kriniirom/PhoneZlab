@@ -141,7 +141,7 @@ export function HeroCarousel({ initialDiscounts }: HeroCarouselProps) {
 
   return (
     <section
-      className="bg-[#0b1528] text-white overflow-hidden rounded-xl border border-slate-800 shadow-md mx-4 mt-6 relative group transition-all duration-300 animate-fade-in"
+      className={`bg-[#0b1528] text-white overflow-hidden rounded-xl border border-slate-800 shadow-md mx-4 mt-6 relative group transition-all duration-300 animate-fade-in ${bgImage ? "aspect-[2.8/1] sm:aspect-[2.9/1] md:aspect-[3.0/1] lg:aspect-[3.3/1] w-auto h-auto" : "min-h-[220px] md:min-h-[260px] lg:min-h-[300px]"}`}
       style={{
         ...(activeSlide.textColor ? { color: activeSlide.textColor } : {}),
         ...(bgImage ? {

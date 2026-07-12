@@ -70,7 +70,9 @@ export function HeroCarousel({ initialDiscounts }: HeroCarouselProps) {
   const hasText = !!(activeSlide.title || activeSlide.description || activeSlide.discountText || activeSlide.code);
 
   const slideContent = (
-    <div className="flex flex-col md:flex-row items-center justify-between px-8 py-6 md:px-16 md:py-8 gap-6 min-h-[220px] md:min-h-[260px] lg:min-h-[300px] transition-all duration-500 ease-in-out">
+    <div className={`flex flex-col md:flex-row items-center justify-between px-8 py-6 md:px-16 md:py-8 gap-6 transition-all duration-500 ease-in-out ${
+      bgImage ? "h-full w-full" : "min-h-[220px] md:min-h-[260px] lg:min-h-[300px]"
+    }`}>
       {/* Left Content Column */}
       {hasText && (
         <div className={`relative z-10 max-w-2xl flex-1 flex flex-col justify-center ${bgImage ? 'bg-slate-950/60 backdrop-blur-xs p-5 md:p-6 rounded-xl border border-white/10 text-white' : ''}`}>
@@ -141,7 +143,11 @@ export function HeroCarousel({ initialDiscounts }: HeroCarouselProps) {
 
   return (
     <section 
-      className="bg-[#0b1528] text-white overflow-hidden rounded-xl border border-slate-800 shadow-md mx-4 mt-6 relative group transition-all duration-300 animate-fade-in"
+      className={`bg-[#0b1528] text-white overflow-hidden rounded-xl border border-slate-800 shadow-md mx-4 mt-6 relative group transition-all duration-300 animate-fade-in ${
+        bgImage 
+          ? "aspect-[2.8/1] sm:aspect-[3.2/1] md:aspect-[3.8/1] lg:aspect-[4.2/1] w-auto h-auto" 
+          : "min-h-[220px] md:min-h-[260px] lg:min-h-[300px]"
+      }`}
       style={{
         ...(activeSlide.textColor ? { color: activeSlide.textColor } : {}),
         ...(bgImage ? { 

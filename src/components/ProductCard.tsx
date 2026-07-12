@@ -26,7 +26,7 @@ export function ProductCard({ product }: ProductCardProps) {
     <Link href={`/products/${product.handle}`} className="block h-full">
       <div className="fk-card p-4 h-full flex flex-col bg-white">
         
-        <div className="relative aspect-square mb-4 bg-gray-50 flex items-center justify-center p-4">
+        <div className="relative aspect-square mb-4 bg-gray-50 flex items-center justify-center p-0 overflow-hidden">
           <div className="absolute top-2 left-2 bg-[#2874f0] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm flex items-center gap-1 z-10 shadow-sm">
             ASSURED <span className="text-white">+</span>
           </div>
@@ -34,7 +34,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <img 
             src={imageUrl} 
             alt={product.title}
-            className="w-full h-full object-contain mix-blend-multiply hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
           />
         </div>
         

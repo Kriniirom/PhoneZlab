@@ -11,17 +11,17 @@ const categories = [
 
 export function CategoriesStrip() {
   return (
-    <div className="bg-white shadow-sm mb-4 border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 py-4">
-        <div className="flex items-center justify-start lg:justify-center overflow-x-auto no-scrollbar gap-8 md:gap-12 pb-2">
+    <div className="fk-navbar-strip bg-white shadow-xs border-b border-gray-100">
+      <div className="max-w-7xl mx-auto px-4 py-2.5">
+        <div className="flex items-center justify-start lg:justify-center overflow-x-auto no-scrollbar gap-6 md:gap-10 pb-1">
           {categories.map((cat, idx) => {
             const Icon = cat.icon;
             return (
               <Link key={idx} href={cat.href} className="flex flex-col items-center shrink-0 group">
-                <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-2 transition-transform group-hover:scale-105 ${cat.bg}`}>
-                  <Icon className={`w-8 h-8 ${cat.color}`} />
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-1.5 transition-transform group-hover:scale-105 ${cat.bg}`}>
+                  <Icon className={`w-6 h-6 ${cat.color}`} />
                 </div>
-                <span className={`text-sm whitespace-nowrap font-medium ${idx === 0 ? "text-[#2874f0]" : "text-gray-700"}`}>
+                <span className={`text-xs whitespace-nowrap font-semibold ${idx === 0 ? "text-[#2874f0]" : "text-gray-700"}`}>
                   {cat.name}
                 </span>
               </Link>

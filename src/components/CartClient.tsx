@@ -14,6 +14,7 @@ import {
   Tag
 } from "lucide-react";
 import { updateCartItemAction, removeCartItemAction, updateCartDiscountCodesAction } from "@/features/cart/actions";
+import { STORE_COUPONS } from "@/config/offers";
 
 interface CartClientProps {
   initialCart: ShopifyCart | null;
@@ -26,6 +27,7 @@ export function CartClient({ initialCart }: CartClientProps) {
   const [discountCode, setDiscountCode] = useState("");
   const [isApplyingDiscount, setIsApplyingDiscount] = useState(false);
   const [discountError, setDiscountError] = useState<string | null>(null);
+  const [showCouponModal, setShowCouponModal] = useState(false);
 
   // Sync cartId dynamically on mount
   useEffect(() => {
@@ -130,6 +132,35 @@ export function CartClient({ initialCart }: CartClientProps) {
     } catch (err: any) {
       console.error(err);
       setDiscountError("An error occurred while removing discount.");
+    } finally {
+      setIsApplyingDiscount(false);
+    }
+  };
+
+  const handleApplyDiscountWithCode = async (code: string) => {
+    setIsApplyingDiscount(true);
+    setDiscountError(null);
+    try {
+      const cartId = cart?.id;
+      if (cartId) {
+        const res = await updateCartDiscountCodesAction(cartId, [code.toUpperCase()]);
+        if (res.success && res.cart) {
+          setCart(res.cart);
+          window.dispatchEvent(new Event("cart-updated"));
+          
+          const newlyApplied = res.cart.discountCodes?.find(
+            dc => dc.code === code.toUpperCase()
+          );
+          if (newlyApplied && !newlyApplied.applicable) {
+            setDiscountError(`Code "${code.toUpperCase()}" is invalid or not applicable.`);
+          }
+        } else {
+          setDiscountError(res.error || "Failed to apply discount code.");
+        }
+      }
+    } catch (err: any) {
+      console.error(err);
+      setDiscountError("An error occurred while applying discount.");
     } finally {
       setIsApplyingDiscount(false);
     }
@@ -296,6 +327,20 @@ export function CartClient({ initialCart }: CartClientProps) {
                 </div>
               );
             })}
+
+            {/* Mobile Coupon Trigger Row (Visible on Mobile only) */}
+            <div className="block lg:hidden bg-white p-3.5 rounded-sm shadow-sm">
+              <button 
+                onClick={() => setShowCouponModal(true)}
+                className="w-full flex items-center justify-between text-sm font-semibold text-gray-800 cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <Tag className="w-4 h-4 text-[#2874f0]" />
+                  <span>Apply Coupon / Offers</span>
+                </div>
+                <ArrowRight className="w-4 h-4 text-gray-400" />
+              </button>
+            </div>
           </div>
 
           {/* RIGHT: Summary Details (4 cols) */}
@@ -357,6 +402,51 @@ export function CartClient({ initialCart }: CartClientProps) {
                   ))}
                 </div>
               )}
+
+              {/* Browse available coupons */}
+              <div className="mt-4 pt-3 border-t border-gray-100">
+                <span className="text-xs font-bold text-gray-500 block mb-2.5 uppercase tracking-wider">Available Coupons</span>
+                <div className="space-y-2 max-h-[240px] overflow-y-auto pr-1">
+                  {STORE_COUPONS.map((coupon) => {
+                    const isApplied = cart?.discountCodes?.some(dc => dc.code === coupon.code && dc.applicable);
+                    
+                    return (
+                      <div key={coupon.code} className="border border-gray-100 rounded-sm bg-gray-50/50 p-2.5 flex flex-col gap-1 text-xs">
+                        <div className="flex items-center justify-between">
+                          <span className="font-mono font-bold text-gray-800 bg-gray-100 px-1.5 py-0.5 rounded border border-gray-200 uppercase">
+                            {coupon.code}
+                          </span>
+                          <button
+                            onClick={() => isApplied ? handleRemoveDiscount(coupon.code) : handleApplyDiscountWithCode(coupon.code)}
+                            disabled={isApplyingDiscount}
+                            className={`font-bold uppercase tracking-wider cursor-pointer text-[10px] select-none ${
+                              isApplied 
+                                ? "text-red-500 hover:text-red-700" 
+                                : "text-[#2874f0] hover:text-[#1a5ec7] disabled:opacity-40"
+                            }`}
+                          >
+                            {isApplied ? "Remove" : "Apply"}
+                          </button>
+                        </div>
+                        <span className="font-bold text-gray-800 mt-1">{coupon.title}</span>
+                        <p className="text-[#878787] mt-0.5 leading-snug">{coupon.description}</p>
+                        
+                        {totalOriginalSubtotal < coupon.minimumOrder ? (
+                          <span className="text-[10px] text-amber-600 font-medium mt-1 bg-amber-50 px-1 py-0.5 rounded-sm w-fit leading-none">
+                            Add {formatter.format(coupon.minimumOrder - totalOriginalSubtotal)} more to unlock
+                          </span>
+                        ) : (
+                          isApplied && discountAmount > 0 && (
+                            <span className="text-[10px] text-green-600 font-bold mt-1 bg-green-50 px-1 py-0.5 rounded-sm w-fit leading-none">
+                              ✓ You saved {formatter.format(discountAmount)}!
+                            </span>
+                          )
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
 
             {/* Price details card */}
@@ -419,6 +509,138 @@ export function CartClient({ initialCart }: CartClientProps) {
         </div>
 
       </div>
+
+      {/* Mobile Bottom slide-up Coupon Drawer Modal */}
+      {showCouponModal && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/55 lg:hidden">
+          {/* Backdrop click close */}
+          <div className="absolute inset-0 bg-transparent" onClick={() => setShowCouponModal(false)} />
+          
+          <div className="bg-white w-full rounded-t-xl max-h-[85vh] flex flex-col p-4 shadow-2xl relative z-10 animate-in slide-in-from-bottom duration-200">
+            
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3 mb-4">
+              <div className="flex items-center gap-1.5">
+                <Tag className="w-4 h-4 text-[#2874f0]" />
+                <span className="text-sm font-bold text-gray-900">Coupons & Offers</span>
+              </div>
+              <button 
+                onClick={() => setShowCouponModal(false)}
+                className="text-gray-400 hover:text-gray-600 font-bold text-sm bg-transparent border-none cursor-pointer p-1"
+              >
+                Close
+              </button>
+            </div>
+
+            {/* Modal Scroll Container */}
+            <div className="overflow-y-auto space-y-4 flex-grow pb-6 pr-1 scrollbar-thin">
+              {/* Form Input */}
+              <form onSubmit={handleApplyDiscount} className="flex gap-2">
+                <input 
+                  type="text"
+                  placeholder="Enter coupon code"
+                  value={discountCode}
+                  onChange={(e) => setDiscountCode(e.target.value)}
+                  disabled={isApplyingDiscount}
+                  className="flex-grow bg-gray-50 border border-gray-200 rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-[#2874f0] uppercase placeholder:text-gray-400"
+                />
+                <button
+                  type="submit"
+                  disabled={isApplyingDiscount || !discountCode.trim()}
+                  className="bg-[#2874f0] hover:bg-[#1a5ec7] text-white text-xs font-bold px-4 py-2 rounded-sm disabled:opacity-50 cursor-pointer"
+                >
+                  Apply
+                </button>
+              </form>
+
+              {discountError && (
+                <p className="text-xs text-red-500 font-semibold">{discountError}</p>
+              )}
+
+              {/* Applied codes */}
+              {cart?.discountCodes && cart.discountCodes.length > 0 && (
+                <div className="space-y-2">
+                  <span className="text-xs font-bold text-gray-500 block uppercase tracking-wider">Applied Coupons</span>
+                  {cart.discountCodes.map((dc) => (
+                    <div 
+                      key={dc.code} 
+                      className={`flex items-center justify-between p-2.5 rounded-sm border text-xs font-semibold ${
+                        dc.applicable 
+                          ? "bg-green-50 border-green-200 text-green-700" 
+                          : "bg-red-50 border-red-200 text-red-700"
+                      }`}
+                    >
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-bold">{dc.code}</span>
+                        <span>{dc.applicable ? "(Applied)" : "(Invalid)"}</span>
+                      </div>
+                      <button
+                        onClick={() => handleRemoveDiscount(dc.code)}
+                        disabled={isApplyingDiscount}
+                        className="text-gray-400 hover:text-gray-600 font-bold bg-transparent border-none cursor-pointer text-xs"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Coupons List */}
+              <div className="space-y-3 pt-2">
+                <span className="text-xs font-bold text-gray-500 block uppercase tracking-wider">Available Coupons</span>
+                <div className="space-y-2.5">
+                  {STORE_COUPONS.map((coupon) => {
+                    const isApplied = cart?.discountCodes?.some(dc => dc.code === coupon.code && dc.applicable);
+                    
+                    return (
+                      <div key={coupon.code} className="border border-gray-100 rounded-sm bg-gray-50/50 p-3.5 flex flex-col gap-1.5 text-xs">
+                        <div className="flex items-center justify-between">
+                          <span className="font-mono font-bold text-gray-800 bg-gray-100 px-2 py-0.5 rounded border border-gray-200 uppercase">
+                            {coupon.code}
+                          </span>
+                          <button
+                            onClick={() => {
+                              if (isApplied) {
+                                handleRemoveDiscount(coupon.code);
+                              } else {
+                                handleApplyDiscountWithCode(coupon.code);
+                              }
+                            }}
+                            disabled={isApplyingDiscount}
+                            className={`font-bold uppercase tracking-wider cursor-pointer text-xs select-none ${
+                              isApplied 
+                                ? "text-red-500 hover:text-red-700" 
+                                : "text-[#2874f0] hover:text-[#1a5ec7] disabled:opacity-40"
+                            }`}
+                          >
+                            {isApplied ? "Remove" : "Apply"}
+                          </button>
+                        </div>
+                        <span className="font-bold text-gray-800 mt-1">{coupon.title}</span>
+                        <p className="text-[#878787] mt-0.5 leading-snug">{coupon.description}</p>
+                        
+                        {totalOriginalSubtotal < coupon.minimumOrder ? (
+                          <span className="text-[10px] text-amber-600 font-medium mt-1 bg-amber-50 px-1 py-0.5 rounded-sm w-fit leading-none">
+                            Add {formatter.format(coupon.minimumOrder - totalOriginalSubtotal)} more to unlock
+                          </span>
+                        ) : (
+                          isApplied && discountAmount > 0 && (
+                            <span className="text-[10px] text-green-600 font-bold mt-1 bg-green-50 px-1 py-0.5 rounded-sm w-fit leading-none">
+                              ✓ You saved {formatter.format(discountAmount)}!
+                            </span>
+                          )
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
     </div>
   );
 }

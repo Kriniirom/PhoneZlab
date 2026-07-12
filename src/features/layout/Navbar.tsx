@@ -184,50 +184,52 @@ export function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 left-0 right-0 z-50 bg-[#2874f0] shadow-md">
-      <div className="max-w-7xl mx-auto px-4 py-2 flex flex-col md:flex-row md:items-center justify-between gap-3">
+    <header className="sticky top-0 left-0 right-0 z-50 bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 shadow-sm transition-colors">
+      <div className="max-w-7xl mx-auto px-4 py-2.5 flex flex-col md:flex-row md:items-center justify-between gap-3">
         
         {/* Top Row on Mobile, Left Side on Desktop */}
         <div className="flex items-center justify-between md:w-auto">
-          <Link href="/" className="flex flex-col">
-            <span className="text-white text-2xl font-bold italic tracking-tight leading-none">PhoneZlab</span>
-            <span className="text-white/90 text-xs italic flex items-center gap-1 mt-0.5">
-              Explore <span className="text-[#ffe500] font-bold">Plus</span>
-              <Star className="w-3 h-3 text-[#ffe500] fill-[#ffe500]" />
-            </span>
+          <Link href="/" className="flex items-center gap-3 select-none group">
+            <div className="w-8.5 h-8.5 rounded-lg bg-[#2874f0] flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-[1.03]">
+              <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5 text-white stroke-white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M7 8h10l-4.5 4.5" />
+                <path d="M11.5 11.5l-4.5 4H17" />
+              </svg>
+            </div>
+            <span className="text-slate-900 dark:text-white text-xl font-bold tracking-tight">PhoneZlab</span>
           </Link>
-
+ 
           {/* Mobile Right Actions */}
-          <div className="flex md:hidden items-center gap-4 text-white">
-            <Link href={isLoggedIn ? "/profile" : "/login"} className="p-1">
+          <div className="flex md:hidden items-center gap-4 text-gray-700 dark:text-gray-200">
+            <Link href={isLoggedIn ? "/profile" : "/login"} className="p-1 hover:bg-gray-100 dark:hover:bg-slate-850 rounded-full transition-colors">
               <User className="w-5 h-5" />
             </Link>
             <button 
               onClick={toggleTheme}
-              className="p-1 hover:bg-white/10 dark:hover:bg-white/5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-white/20 cursor-pointer"
+              className="p-1 hover:bg-gray-100 dark:hover:bg-slate-850 rounded-full transition-colors focus:outline-none cursor-pointer"
               aria-label={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
             >
               {theme === "light" ? (
-                <Moon className="w-5 h-5 text-white" />
+                <Moon className="w-5 h-5" />
               ) : (
-                <Sun className="w-5 h-5 text-white" />
+                <Sun className="w-5 h-5" />
               )}
             </button>
-            <Link href="/cart" className="p-1 relative">
+            <Link href="/cart" className="p-1 relative hover:bg-gray-100 dark:hover:bg-slate-850 rounded-full transition-colors">
               <ShoppingBag className="w-5 h-5" />
               {cartCount !== null && cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-[#2874f0]">
+                <span className="absolute -top-1 -right-1 bg-[#2874f0] text-white text-[8px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white dark:border-slate-900">
                   {cartCount}
                 </span>
               )}
             </Link>
           </div>
         </div>
-
+ 
         {/* Search Bar - Full Width on Mobile, Middle on Desktop */}
         <div className="flex-1 max-w-2xl w-full">
           <div ref={searchRef} className="relative w-full">
-            <form onSubmit={handleSearch} className="relative flex items-center bg-white rounded shadow-sm overflow-hidden border border-transparent focus-within:border-gray-300 focus-within:ring-2 focus-within:ring-white/25 transition-all">
+            <form onSubmit={handleSearch} className="relative flex items-center bg-gray-50 dark:bg-slate-800/80 rounded-md shadow-sm overflow-hidden border border-gray-200 dark:border-slate-700 focus-within:border-[#2874f0] focus-within:bg-white dark:focus-within:bg-slate-900 transition-all">
               <input 
                 type="text"
                 value={query}
@@ -242,7 +244,7 @@ export function Navbar() {
                 }}
                 onKeyDown={handleKeyDown}
                 placeholder="Search for accessories, premium cases, charging docks and more..."
-                className="w-full bg-transparent text-black py-2.5 pl-4 pr-12 focus:outline-none text-sm placeholder:text-gray-400 truncate"
+                className="w-full bg-transparent text-slate-900 dark:text-white py-2.5 pl-4 pr-12 focus:outline-none text-sm placeholder:text-gray-400 dark:placeholder:text-gray-500 truncate"
               />
               
               {/* Right container: Loading spinner or search button */}
@@ -252,14 +254,14 @@ export function Navbar() {
                 )}
                 <button 
                   type="submit" 
-                  className="h-full px-3 text-[#2874f0] hover:bg-gray-50 active:bg-gray-100 transition-colors border-l border-gray-100 flex items-center justify-center cursor-pointer"
+                  className="h-full px-3 text-[#2874f0] dark:text-[#3b82f6] hover:bg-gray-150 dark:hover:bg-slate-700 transition-colors border-l border-gray-200 dark:border-slate-750 flex items-center justify-center cursor-pointer"
                   aria-label="Submit search"
                 >
                   <Search className="w-4 h-4 font-bold" />
                 </button>
               </div>
             </form>
-
+ 
             {/* Search Results Dropdown */}
             {isOpen && query.trim().length >= 2 && (
               <div className="absolute left-0 right-0 mt-1.5 bg-white text-black rounded-lg shadow-xl border border-gray-100 z-50 overflow-hidden max-h-[420px] flex flex-col">
@@ -276,7 +278,7 @@ export function Navbar() {
                       const image = variant?.image?.url || product.featuredImage?.url;
                       
                       const isFocused = index === focusedIndex;
-
+ 
                       return (
                         <div
                           key={product.id}
@@ -305,7 +307,7 @@ export function Navbar() {
                               <Search className="w-4 h-4 text-gray-300" />
                             )}
                           </div>
-
+ 
                           {/* Info */}
                           <div className="flex-grow min-w-0">
                             <span className="block text-sm font-semibold text-gray-800 truncate leading-snug">
@@ -317,7 +319,7 @@ export function Navbar() {
                               </span>
                             )}
                           </div>
-
+ 
                           {/* Price */}
                           {price && (
                             <div className="text-right flex-shrink-0">
@@ -340,7 +342,7 @@ export function Navbar() {
                     </div>
                   )}
                 </div>
-
+ 
                 {/* View all results button */}
                 {results.length > 0 && (
                   <div className="bg-gray-50 p-2.5 border-t border-gray-100 text-center">
@@ -361,12 +363,12 @@ export function Navbar() {
             )}
           </div>
         </div>
-
+ 
         {/* Desktop Right Actions */}
-        <div className="hidden md:flex items-center gap-6 text-white font-medium">
+        <div className="hidden md:flex items-center gap-6 text-gray-700 dark:text-gray-200 font-medium text-sm">
           {isLoggedIn ? (
             <>
-              <Link href="/profile" className="hover:bg-white/10 px-4 py-1.5 rounded transition-all flex items-center gap-2">
+              <Link href="/profile" className="hover:bg-gray-105 dark:hover:bg-slate-800 px-4 py-1.5 rounded transition-all flex items-center gap-2">
                 <User className="w-4 h-4" />
                 <span>Profile</span>
               </Link>
@@ -378,32 +380,32 @@ export function Navbar() {
               </button>
             </>
           ) : (
-            <Link href="/login" className="bg-white text-[#2874f0] px-8 py-1.5 font-bold rounded-sm hover:bg-gray-50 transition-colors">
+            <Link href="/login" className="bg-[#2874f0] hover:bg-[#1a5ec7] text-white px-6 py-1.5 font-bold rounded-sm transition-colors dark:bg-slate-850 dark:hover:bg-slate-800 dark:text-white text-center">
               Login
             </Link>
           )}
           <button 
             onClick={toggleTheme}
-            className="flex items-center gap-2 hover:bg-white/10 px-3 py-1.5 rounded transition-all focus:outline-none focus:ring-2 focus:ring-white/20 cursor-pointer"
+            className="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-slate-800 px-3 py-1.5 rounded transition-all focus:outline-none cursor-pointer"
             aria-label={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
           >
             {theme === "light" ? (
               <>
-                <Moon className="w-4 h-4 text-white" />
+                <Moon className="w-4 h-4 text-gray-600" />
                 <span>Dark Mode</span>
               </>
             ) : (
               <>
-                <Sun className="w-4 h-4 text-white animate-pulse" />
+                <Sun className="w-4 h-4 text-amber-500 animate-pulse" />
                 <span>Light Mode</span>
               </>
             )}
           </button>
-          <Link href="/cart" className="flex items-center gap-2 hover:bg-white/10 px-3 py-1 rounded transition-colors relative">
+          <Link href="/cart" className="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-slate-800 px-3 py-1.5 rounded transition-colors relative">
             <div className="relative">
               <ShoppingBag className="w-5 h-5" />
               {cartCount !== null && cartCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[8px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-[#2874f0]">
+                <span className="absolute -top-1.5 -right-1.5 bg-[#2874f0] text-white text-[8px] font-bold w-4.5 h-4.5 rounded-full flex items-center justify-center border border-white dark:border-slate-900">
                   {cartCount}
                 </span>
               )}
@@ -411,7 +413,7 @@ export function Navbar() {
             <span>Cart</span>
           </Link>
         </div>
-
+ 
       </div>
     </header>
   );

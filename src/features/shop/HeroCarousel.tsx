@@ -70,19 +70,17 @@ export function HeroCarousel({ initialDiscounts }: HeroCarouselProps) {
   const hasText = !!(activeSlide.title || activeSlide.description || activeSlide.discountText || activeSlide.code);
 
   const slideContent = (
-    <div className={`flex flex-col md:flex-row items-center justify-between px-8 py-6 md:px-16 md:py-8 gap-6 transition-all duration-500 ease-in-out ${
-      bgImage ? "h-full w-full" : "min-h-[220px] md:min-h-[260px] lg:min-h-[300px]"
-    }`}>
+    <div className="flex flex-col md:flex-row items-center justify-between px-8 py-6 md:px-16 md:py-8 gap-6 min-h-[220px] md:min-h-[260px] lg:min-h-[300px] transition-all duration-500 ease-in-out">
       {/* Left Content Column */}
       {hasText && (
         <div className={`relative z-10 max-w-2xl flex-1 flex flex-col justify-center ${bgImage ? 'bg-slate-950/60 backdrop-blur-xs p-5 md:p-6 rounded-xl border border-white/10 text-white' : ''}`}>
-          <div 
+          <div
             className="inline-block bg-[#ffc200] text-white font-bold text-[10px] md:text-xs uppercase px-3.5 py-1.5 mb-3 rounded-full tracking-wider w-fit shadow-sm transition-colors"
             style={activeSlide.ctaColor ? { backgroundColor: activeSlide.ctaColor } : undefined}
           >
             {activeSlide.badge || "THE BIG TECH CARNIVAL"}
           </div>
-          
+
           {/* Slide transitions wrapper */}
           <div className="transition-all duration-300 ease-out min-h-[80px] md:min-h-[100px] flex flex-col justify-start">
             {activeSlide.title && (
@@ -91,7 +89,7 @@ export function HeroCarousel({ initialDiscounts }: HeroCarouselProps) {
               </h1>
             )}
             {activeSlide.discountText && (
-              <h2 
+              <h2
                 className="text-xl md:text-2xl font-black italic mb-3 uppercase text-[#ffc200]"
                 style={activeSlide.ctaColor ? { color: activeSlide.ctaColor } : undefined}
               >
@@ -109,7 +107,7 @@ export function HeroCarousel({ initialDiscounts }: HeroCarouselProps) {
           {(activeSlide.code || activeSlide.minimumOrderText || activeSlide.isAutomatic !== undefined) && (
             <div className="flex items-center flex-wrap gap-2.5 mb-5">
               {activeSlide.code ? (
-                <div 
+                <div
                   className="border border-dashed border-[#ffc200]/40 bg-white/5 px-3.5 py-1.5 font-mono font-bold text-xs text-[#ffc200] uppercase rounded-md tracking-wide"
                   style={activeSlide.ctaColor ? { borderColor: `${activeSlide.ctaColor}40`, color: activeSlide.ctaColor } : undefined}
                 >
@@ -128,8 +126,8 @@ export function HeroCarousel({ initialDiscounts }: HeroCarouselProps) {
             </div>
           )}
 
-          <Link 
-            href={activeSlide.buttonUrl || "/collections/all"} 
+          <Link
+            href={activeSlide.buttonUrl || "/collections/all"}
             className="inline-flex items-center gap-2 bg-[#ffc200] hover:bg-[#e0b000] text-white font-bold px-8 py-3 rounded-md shadow-md hover:shadow-lg transition-all text-xs tracking-wider uppercase w-fit cursor-pointer"
             style={activeSlide.ctaColor ? { backgroundColor: activeSlide.ctaColor } : undefined}
           >
@@ -142,15 +140,11 @@ export function HeroCarousel({ initialDiscounts }: HeroCarouselProps) {
   );
 
   return (
-    <section 
-      className={`bg-[#0b1528] text-white overflow-hidden rounded-xl border border-slate-800 shadow-md mx-4 mt-6 relative group transition-all duration-300 animate-fade-in ${
-        bgImage 
-          ? "aspect-[2.8/1] sm:aspect-[3.2/1] md:aspect-[3.8/1] lg:aspect-[4.2/1] w-auto h-auto" 
-          : "min-h-[220px] md:min-h-[260px] lg:min-h-[300px]"
-      }`}
+    <section
+      className="bg-[#0b1528] text-white overflow-hidden rounded-xl border border-slate-800 shadow-md mx-4 mt-6 relative group transition-all duration-300 animate-fade-in"
       style={{
         ...(activeSlide.textColor ? { color: activeSlide.textColor } : {}),
-        ...(bgImage ? { 
+        ...(bgImage ? {
           backgroundImage: `url(${bgImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
@@ -171,14 +165,14 @@ export function HeroCarousel({ initialDiscounts }: HeroCarouselProps) {
       {/* Carousel navigation arrows */}
       {discounts.length > 1 && (
         <>
-          <button 
+          <button
             onClick={handlePrev}
             className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-900/10 hover:bg-slate-900/20 dark:bg-white/10 dark:hover:bg-white/20 text-slate-700 dark:text-white flex items-center justify-center cursor-pointer transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 z-20 shadow-xs"
             aria-label="Previous slide"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
-          <button 
+          <button
             onClick={handleNext}
             className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-900/10 hover:bg-slate-900/20 dark:bg-white/10 dark:hover:bg-white/20 text-slate-700 dark:text-white flex items-center justify-center cursor-pointer transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 z-20 shadow-xs"
             aria-label="Next slide"
@@ -195,9 +189,8 @@ export function HeroCarousel({ initialDiscounts }: HeroCarouselProps) {
             <button
               key={idx}
               onClick={() => setCurrentIndex(idx)}
-              className={`w-2.5 h-2.5 rounded-full cursor-pointer transition-all duration-300 ${
-                idx === currentIndex ? "bg-blue-600 dark:bg-blue-500 w-5" : "bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-600"
-              }`}
+              className={`w-2.5 h-2.5 rounded-full cursor-pointer transition-all duration-300 ${idx === currentIndex ? "bg-blue-600 dark:bg-blue-500 w-5" : "bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-600"
+                }`}
               style={idx === currentIndex && slide.ctaColor ? { backgroundColor: slide.ctaColor } : undefined}
               aria-label={`Go to slide ${idx + 1}`}
             />

@@ -53,3 +53,14 @@ export async function updateCartItemAction(cartId: string, lineId: string, merch
     return { success: false, error: String(error) };
   }
 }
+
+export async function updateCartDiscountCodesAction(cartId: string, discountCodes: string[]) {
+  try {
+    const { updateCartDiscountCodes } = await import("./api");
+    const cart = await updateCartDiscountCodes(cartId, discountCodes);
+    return { success: true, cart };
+  } catch (error) {
+    console.error("Error updating cart discount codes:", error);
+    return { success: false, error: String(error) };
+  }
+}

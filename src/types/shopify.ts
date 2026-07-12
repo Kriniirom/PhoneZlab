@@ -90,6 +90,9 @@ export interface ShopifyCartLine {
       title: string;
     };
   };
+  discountAllocations?: {
+    discountedAmount: ShopifyMoney;
+  }[];
 }
 
 export interface ShopifyCart {
@@ -104,6 +107,10 @@ export interface ShopifyCart {
   lines: {
     edges: { node: ShopifyCartLine }[];
   };
+  discountCodes?: {
+    code: string;
+    applicable: boolean;
+  }[];
 }
 
 export interface ShopifyCustomer {

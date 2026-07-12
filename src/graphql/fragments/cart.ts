@@ -11,6 +11,10 @@ export const cartSnippet = /* GraphQL */ `
     id
     checkoutUrl
     totalQuantity
+    discountCodes {
+      code
+      applicable
+    }
     cost {
       subtotalAmount {
         amount
@@ -32,6 +36,12 @@ export const cartSnippet = /* GraphQL */ `
           quantity
           cost {
             totalAmount {
+              amount
+              currencyCode
+            }
+          }
+          discountAllocations {
+            discountedAmount {
               amount
               currencyCode
             }

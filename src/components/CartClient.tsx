@@ -10,9 +10,10 @@ import {
   ShieldCheck, 
   Truck, 
   ArrowRight,
-  RotateCcw
+  RotateCcw,
+  Tag
 } from "lucide-react";
-import { updateCartItemAction, removeCartItemAction } from "@/features/cart/actions";
+import { updateCartItemAction, removeCartItemAction, updateCartDiscountCodesAction } from "@/features/cart/actions";
 
 interface CartClientProps {
   initialCart: ShopifyCart | null;
@@ -22,6 +23,9 @@ export function CartClient({ initialCart }: CartClientProps) {
   const [cart, setCart] = useState<ShopifyCart | null>(initialCart);
   const [updatingLineId, setUpdatingLineId] = useState<string | null>(null);
   const [removingLineId, setRemovingLineId] = useState<string | null>(null);
+  const [discountCode, setDiscountCode] = useState("");
+  const [isApplyingDiscount, setIsApplyingDiscount] = useState(false);
+  const [discountError, setDiscountError] = useState<string | null>(null);
 
   // Sync cartId dynamically on mount
   useEffect(() => {
@@ -71,6 +75,66 @@ export function CartClient({ initialCart }: CartClientProps) {
     }
   };
 
+  const handleApplyDiscount = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!discountCode.trim()) return;
+    setIsApplyingDiscount(true);
+    setDiscountError(null);
+    try {
+      const cartId = cart?.id;
+      if (cartId) {
+        const currentCodes = cart?.discountCodes?.map(dc => dc.code) || [];
+        const newCodes = [...currentCodes, discountCode.trim().toUpperCase()];
+        
+        const res = await updateCartDiscountCodesAction(cartId, newCodes);
+        if (res.success && res.cart) {
+          setCart(res.cart);
+          setDiscountCode("");
+          window.dispatchEvent(new Event("cart-updated"));
+          
+          const newlyApplied = res.cart.discountCodes?.find(
+            dc => dc.code === discountCode.trim().toUpperCase()
+          );
+          if (newlyApplied && !newlyApplied.applicable) {
+            setDiscountError(`Code "${discountCode.trim().toUpperCase()}" is invalid or not applicable.`);
+          }
+        } else {
+          setDiscountError(res.error || "Failed to apply discount code.");
+        }
+      }
+    } catch (err: any) {
+      console.error(err);
+      setDiscountError("An error occurred while applying discount.");
+    } finally {
+      setIsApplyingDiscount(false);
+    }
+  };
+
+  const handleRemoveDiscount = async (codeToRemove: string) => {
+    setIsApplyingDiscount(true);
+    setDiscountError(null);
+    try {
+      const cartId = cart?.id;
+      if (cartId) {
+        const currentCodes = cart?.discountCodes?.map(dc => dc.code) || [];
+        const newCodes = currentCodes.filter(code => code !== codeToRemove);
+        
+        const res = await updateCartDiscountCodesAction(cartId, newCodes);
+        if (res.success && res.cart) {
+          setCart(res.cart);
+          window.dispatchEvent(new Event("cart-updated"));
+        } else {
+          setDiscountError(res.error || "Failed to remove discount code.");
+        }
+      }
+    } catch (err: any) {
+      console.error(err);
+      setDiscountError("An error occurred while removing discount.");
+    } finally {
+      setIsApplyingDiscount(false);
+    }
+  };
+
   const currency = cart?.cost.totalAmount.currencyCode || "INR";
   const formatter = new Intl.NumberFormat("en-IN", {
     style: "currency",
@@ -84,13 +148,15 @@ export function CartClient({ initialCart }: CartClientProps) {
 
   const totalQuantity = cartLines.reduce((sum, line) => sum + line.quantity, 0);
   
-  const totalSubtotal = cartLines.reduce((sum, line) => {
+  const totalOriginalSubtotal = cartLines.reduce((sum, line) => {
     const price = parseFloat(line.merchandise.price.amount || "0");
     return sum + (price * line.quantity);
   }, 0);
 
+  const shopifySubtotal = cart?.cost?.subtotalAmount ? parseFloat(cart.cost.subtotalAmount.amount) : totalOriginalSubtotal;
+  const discountAmount = Math.max(0, totalOriginalSubtotal - shopifySubtotal);
   const taxAmount = cart?.cost.totalTaxAmount ? parseFloat(cart.cost.totalTaxAmount.amount) : 0;
-  const totalAmount = totalSubtotal + taxAmount;
+  const totalAmount = cart?.cost.totalAmount ? parseFloat(cart.cost.totalAmount.amount) : (shopifySubtotal + taxAmount);
 
   if (!cart || cartLines.length === 0) {
     return (
@@ -235,6 +301,64 @@ export function CartClient({ initialCart }: CartClientProps) {
           {/* RIGHT: Summary Details (4 cols) */}
           <div className="lg:col-span-4 sticky top-20 flex flex-col gap-3">
             
+            {/* Coupon Card */}
+            <div className="bg-white p-4 rounded-sm shadow-sm">
+              <h2 className="text-xs font-bold text-[#878787] uppercase border-b border-gray-100 pb-3 flex items-center gap-1.5">
+                <Tag className="w-3.5 h-3.5 text-[#2874f0]" />
+                <span>Apply Coupon</span>
+              </h2>
+              
+              <form onSubmit={handleApplyDiscount} className="flex gap-2 mt-4">
+                <input 
+                  type="text"
+                  placeholder="Enter coupon code"
+                  value={discountCode}
+                  onChange={(e) => setDiscountCode(e.target.value)}
+                  disabled={isApplyingDiscount}
+                  className="flex-1 bg-gray-50 border border-gray-200 rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-[#2874f0] uppercase placeholder:text-gray-400"
+                />
+                <button
+                  type="submit"
+                  disabled={isApplyingDiscount || !discountCode.trim()}
+                  className="bg-[#2874f0] hover:bg-[#1a5ec7] text-white text-xs font-bold px-4 py-2 rounded-sm disabled:opacity-50 cursor-pointer transition-colors"
+                >
+                  {isApplyingDiscount ? "Applying..." : "Apply"}
+                </button>
+              </form>
+
+              {discountError && (
+                <p className="text-xs text-red-500 font-semibold mt-2">{discountError}</p>
+              )}
+
+              {/* Display applied discount codes */}
+              {cart?.discountCodes && cart.discountCodes.length > 0 && (
+                <div className="mt-3 space-y-2">
+                  {cart.discountCodes.map((dc) => (
+                    <div 
+                      key={dc.code} 
+                      className={`flex items-center justify-between p-2.5 rounded-sm border text-xs font-semibold ${
+                        dc.applicable 
+                          ? "bg-green-50 border-green-200 text-green-700" 
+                          : "bg-red-50 border-red-200 text-red-700"
+                      }`}
+                    >
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-bold">{dc.code}</span>
+                        <span>{dc.applicable ? "(Applied)" : "(Invalid)"}</span>
+                      </div>
+                      <button
+                        onClick={() => handleRemoveDiscount(dc.code)}
+                        disabled={isApplyingDiscount}
+                        className="text-gray-400 hover:text-gray-600 font-bold bg-transparent border-none cursor-pointer text-xs"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {/* Price details card */}
             <div className="bg-white p-4 rounded-sm shadow-sm">
               <h2 className="text-xs font-bold text-[#878787] uppercase border-b border-gray-100 pb-3">Price Details</h2>
@@ -242,8 +366,14 @@ export function CartClient({ initialCart }: CartClientProps) {
               <div className="space-y-3.5 mt-4 text-sm text-gray-800">
                 <div className="flex justify-between">
                   <span>Price ({totalQuantity} {totalQuantity === 1 ? "item" : "items"})</span>
-                  <span>{formatter.format(totalSubtotal)}</span>
+                  <span>{formatter.format(totalOriginalSubtotal)}</span>
                 </div>
+                {discountAmount > 0 && (
+                  <div className="flex justify-between text-green-600 font-medium">
+                    <span>Discount</span>
+                    <span>- {formatter.format(discountAmount)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-green-600 font-medium">
                   <span>Delivery Charges</span>
                   <span>FREE</span>

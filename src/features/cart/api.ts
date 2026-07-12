@@ -7,7 +7,7 @@
 
 import { shopifyFetch } from '@/lib/shopify/graphql';
 import { getCartQuery } from '@/graphql/queries/cart';
-import { createCartMutation, addCartItemMutation, removeCartItemMutation, updateCartMutation } from '@/graphql/mutations/cart';
+import { createCartMutation, addCartItemMutation, removeCartItemMutation, updateCartMutation, updateCartDiscountCodesMutation } from '@/graphql/mutations/cart';
 import type { ShopifyCart } from '@/types/shopify';
 
 export async function getCart(cartId: string): Promise<ShopifyCart | null> {
@@ -48,4 +48,12 @@ export async function updateCart(cartId: string, lines: { id: string; merchandis
     variables: { cartId, lines },
   });
   return res.body.cartLinesUpdate.cart;
+}
+
+export async function updateCartDiscountCodes(cartId: string, discountCodes: string[]): Promise<ShopifyCart | null> {
+  const res = await shopifyFetch<{ cartDiscountCodesUpdate: { cart: ShopifyCart | null } }>({
+    query: updateCartDiscountCodesMutation,
+    variables: { cartId, discountCodes },
+  });
+  return res.body.cartDiscountCodesUpdate.cart;
 }

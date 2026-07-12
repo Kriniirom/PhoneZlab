@@ -1,6 +1,7 @@
 import { searchProducts } from "@/features/product/api";
 import { ProductCard } from "@/components/ProductCard";
 import type { ShopifyProduct } from "@/types/shopify";
+import { SearchTracker } from "./tracking/SearchTracker";
 
 export async function SearchResults({ query }: { query: string }) {
   let products: ShopifyProduct[] = [];
@@ -27,6 +28,7 @@ export async function SearchResults({ query }: { query: string }) {
 
   return (
     <section className="py-12">
+      <SearchTracker query={query} />
       <div className="mb-12 text-center">
         <h2 className="text-2xl font-medium">Search results for &quot;{query}&quot;</h2>
         <p className="text-gray-500 mt-2">{products.length} {products.length === 1 ? 'result' : 'results'} found</p>

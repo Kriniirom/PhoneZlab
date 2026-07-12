@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { getCustomerToken, logoutCustomer } from "@/utils/shopifyAuth";
 import { searchProductsAction } from "@/features/product/actions";
 import type { ShopifyProduct } from "@/types/shopify";
+import { trackRecentSearch } from "@/features/search/tracking/recentSearches";
 
 export function Navbar() {
   const [query, setQuery] = useState("");
@@ -150,6 +151,9 @@ export function Navbar() {
     } else if (e.key === "Enter") {
       if (focusedIndex >= 0 && focusedIndex < results.length) {
         const selectedProduct = results[focusedIndex];
+        if (query.trim()) {
+          trackRecentSearch(query.trim());
+        }
         router.push(`/products/${selectedProduct.handle}`);
         setIsOpen(false);
         setFocusedIndex(-1);
@@ -173,6 +177,7 @@ export function Navbar() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
+      trackRecentSearch(query.trim());
       router.push(`/search?q=${encodeURIComponent(query)}`);
       setIsOpen(false);
       setFocusedIndex(-1);
@@ -289,6 +294,9 @@ export function Navbar() {
                           }`}
                           onMouseEnter={() => setFocusedIndex(index)}
                           onClick={() => {
+                            if (query.trim()) {
+                              trackRecentSearch(query.trim());
+                            }
                             router.push(`/products/${product.handle}`);
                             setIsOpen(false);
                             setFocusedIndex(-1);

@@ -66,6 +66,7 @@
     background-color: var(--surface-elevated) !important;
   }
 
+  .dark .text-slate-900,
   .dark .text-gray-900,
   .dark .text-gray-800,
   .dark .text-gray-700,

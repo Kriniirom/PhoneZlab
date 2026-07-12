@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { createCartAction, addCartItemAction } from "@/features/cart/actions";
 import { ProductOffers } from "./ProductOffers";
+import { trackRecentlyViewed } from "@/features/search/tracking/recentlyViewed";
 
 interface ProductDetailsClientProps {
   product: ShopifyProduct;
@@ -85,6 +86,13 @@ export function ProductDetailsClient({ product, relatedProducts = [] }: ProductD
       return () => clearTimeout(timer);
     }
   }, [toastMessage]);
+
+  // Track recently viewed product on mount/change
+  useEffect(() => {
+    if (product && product.id) {
+      trackRecentlyViewed(product);
+    }
+  }, [product]);
 
   const handleOptionChange = (optionName: string, value: string) => {
     setSelectedOptions((prev) => ({

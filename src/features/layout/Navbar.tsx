@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingBag, Search, Moon, Star, User, Loader2 } from "lucide-react";
+import { ShoppingBag, Search, Moon, Star, User, Loader2, Sun } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { getCustomerToken, logoutCustomer } from "@/utils/shopifyAuth";
@@ -20,6 +20,31 @@ export function Navbar() {
   const router = useRouter();
   const [cartCount, setCartCount] = useState<number | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
+    const systemPrefersDark = typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const activeTheme = savedTheme || (systemPrefersDark ? "dark" : "light");
+    
+    setTheme(activeTheme);
+    if (activeTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === "light" ? "dark" : "light";
+    setTheme(nextTheme);
+    localStorage.setItem("theme", nextTheme);
+    if (nextTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  };
 
   const fetchCartCount = async () => {
     try {
@@ -177,8 +202,16 @@ export function Navbar() {
             <Link href={isLoggedIn ? "/profile" : "/login"} className="p-1">
               <User className="w-5 h-5" />
             </Link>
-            <button className="p-1">
-              <Moon className="w-5 h-5" />
+            <button 
+              onClick={toggleTheme}
+              className="p-1 hover:bg-white/10 dark:hover:bg-white/5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-white/20 cursor-pointer"
+              aria-label={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
+            >
+              {theme === "light" ? (
+                <Moon className="w-5 h-5 text-white" />
+              ) : (
+                <Sun className="w-5 h-5 text-white" />
+              )}
             </button>
             <Link href="/cart" className="p-1 relative">
               <ShoppingBag className="w-5 h-5" />
@@ -349,8 +382,22 @@ export function Navbar() {
               Login
             </Link>
           )}
-          <button className="flex items-center gap-2 hover:bg-white/10 px-3 py-1 rounded transition-colors">
-            <Moon className="w-5 h-5" />
+          <button 
+            onClick={toggleTheme}
+            className="flex items-center gap-2 hover:bg-white/10 px-3 py-1.5 rounded transition-all focus:outline-none focus:ring-2 focus:ring-white/20 cursor-pointer"
+            aria-label={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
+          >
+            {theme === "light" ? (
+              <>
+                <Moon className="w-4 h-4 text-white" />
+                <span>Dark Mode</span>
+              </>
+            ) : (
+              <>
+                <Sun className="w-4 h-4 text-white animate-pulse" />
+                <span>Light Mode</span>
+              </>
+            )}
           </button>
           <Link href="/cart" className="flex items-center gap-2 hover:bg-white/10 px-3 py-1 rounded transition-colors relative">
             <div className="relative">

@@ -3,31 +3,142 @@
 @theme {
   --color-fk-blue: #2874f0;
   --color-fk-yellow: #ffc200;
-  --color-fk-bg: #f1f3f6;
-  --color-fk-text: #212121;
-  --color-fk-gray: #878787;
+  --color-fk-bg: var(--background);
+  --color-fk-text: var(--text-primary);
+  --color-fk-gray: var(--text-secondary);
+  --color-fk-card: var(--surface);
+  --color-fk-border: var(--border-custom);
 
   --font-sans: var(--font-inter);
 }
 
 @layer base {
   :root {
-    --background: var(--color-fk-bg);
-    --foreground: var(--color-fk-text);
+    --background: #f1f3f6;
+    --text-primary: #212121;
+    --text-secondary: #878787;
+    --surface: #ffffff;
+    --surface-elevated: #ffffff;
+    --border-custom: #e0e0e0;
+  }
+
+  .dark {
+    --background: #121212;
+    --text-primary: #f5f5f5;
+    --text-secondary: #aaaaaa;
+    --surface: #1e1e1e;
+    --surface-elevated: #242424;
+    --border-custom: #2d2d2d;
+    color-scheme: dark;
   }
 
   body {
     background-color: var(--background);
-    color: var(--foreground);
+    color: var(--text-primary);
     font-family: var(--font-sans), sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  /* Global dark-mode overrides */
+  .dark body {
+    background-color: var(--background) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .dark .bg-\[\#f1f3f6\] {
+    background-color: var(--background) !important;
+  }
+
+  .dark .bg-white,
+  .dark .fk-card {
+    background-color: var(--surface) !important;
+  }
+
+  .dark select,
+  .dark option,
+  .dark .bg-gray-100 {
+    background-color: var(--surface-elevated) !important;
+  }
+
+  .dark .bg-gray-50 {
+    background-color: var(--surface-elevated) !important;
+  }
+
+  .dark .text-gray-900,
+  .dark .text-gray-800,
+  .dark .text-gray-700,
+  .dark .text-black {
+    color: var(--text-primary) !important;
+  }
+
+  .dark .text-gray-600,
+  .dark .text-gray-500,
+  .dark .text-gray-400 {
+    color: var(--text-secondary) !important;
+  }
+
+  .dark .border-gray-100,
+  .dark .border-gray-200,
+  .dark .border-gray-300,
+  .dark .border-transparent {
+    border-color: var(--border-custom) !important;
+  }
+
+  .dark .divide-gray-50 > * + *,
+  .dark .divide-gray-100 > * + * {
+    border-color: var(--border-custom) !important;
+  }
+
+  .dark .bg-gray-50\/50 {
+    background-color: var(--surface-elevated) !important;
+  }
+
+  .dark input,
+  .dark textarea {
+    background-color: var(--surface-elevated) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-custom) !important;
+  }
+
+  .dark input::placeholder,
+  .dark textarea::placeholder {
+    color: var(--text-secondary) !important;
+    opacity: 0.7;
+  }
+
+  .dark .bg-transparent {
+    background-color: transparent !important;
+  }
+
+  /* Prevent dark product images: keep product image containers white and remove mix-blend-multiply in dark mode */
+  .dark .mix-blend-multiply {
+    mix-blend-mode: normal !important;
+  }
+
+  /* Force background to be solid white ONLY for the immediate wrapper of the product images */
+  .dark .bg-white:has(> img.mix-blend-multiply),
+  .dark .bg-gray-50:has(> img.mix-blend-multiply),
+  .dark button:has(> img.mix-blend-multiply),
+  .dark .bg-white:has(> .mix-blend-multiply),
+  .dark .bg-gray-50:has(> .mix-blend-multiply),
+  .dark button:has(> .mix-blend-multiply) {
+    background-color: #ffffff !important;
+  }
+
+  /* Keep the header dark charcoal for premium dark mode contrast */
+  .dark header {
+    background-color: #1a1a1a !important;
+    border-bottom: 1px solid var(--border-custom);
   }
 }
 
 @layer utilities {
   .fk-card {
-    @apply bg-white rounded shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden;
+    background-color: var(--surface);
+    border: 1px solid var(--border-custom);
+    @apply rounded shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden;
   }
   
   .fk-button-yellow {

@@ -1,34 +1,172 @@
-import Link from "next/link";
+import { shopifyFetch } from "@/lib/shopify/graphql";
+import { HeroCarousel } from "./HeroCarousel";
 
-export function Hero() {
-  return (
-    <section className="bg-[#2a55e5] text-white overflow-hidden rounded-sm shadow-sm mx-4 mt-4">
-      <div className="flex flex-col md:flex-row items-center justify-between p-8 md:p-12 relative">
-        <div className="relative z-10 max-w-2xl">
-          <div className="inline-block bg-[#ffc200] text-black font-bold text-xs md:text-sm px-3 py-1 mb-4 rounded-sm">
-            THE BIG TECH CARNIVAL
-          </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black italic tracking-tight leading-none mb-2">
-            UNBEATABLE DEALS ON INDIAN TECH ACCESSORIES
-          </h1>
-          <h2 className="text-3xl md:text-4xl font-black text-[#ffc200] italic mb-6">
-            UP TO 70% OFF
-          </h2>
-          <p className="text-sm md:text-base font-medium mb-8 text-white/90">
-            Extra 10% Instant Discount on Axis Bank & ICICI Credit Cards
-          </p>
-          <Link href="/collections/all" className="inline-block bg-[#ffc200] text-black font-bold px-8 py-3 rounded shadow hover:bg-yellow-400 transition-colors">
-            SHOP GREAT OFFERS
-          </Link>
-        </div>
+export const revalidate = 0;
 
-        {/* Carousel indicators (static for now) */}
-        <div className="absolute bottom-6 right-8 flex gap-2">
-          <div className="w-8 h-3 bg-[#ffc200] rounded-full"></div>
-          <div className="w-3 h-3 bg-white/40 rounded-full"></div>
-          <div className="w-3 h-3 bg-white/40 rounded-full"></div>
-        </div>
-      </div>
-    </section>
-  );
+const GET_BANNERS_AND_OFFERS = `
+  query GetBannersAndOffers($first: Int!) {
+    heroBanners: metaobjects(type: "hero_banner", first: $first) {
+      nodes {
+        id
+        handle
+        fields {
+          key
+          value
+          reference {
+            ... on MediaImage {
+              image {
+                url
+              }
+            }
+            ... on GenericFile {
+              url
+            }
+            ... on Collection {
+              handle
+            }
+          }
+        }
+      }
+    }
+    offers: metaobjects(type: "offer", first: $first) {
+      nodes {
+        id
+        handle
+        fields {
+          key
+          value
+          reference {
+            ... on MediaImage {
+              image {
+                url
+              }
+            }
+            ... on GenericFile {
+              url
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export interface HeroBanner {
+  id: string;
+  handle: string;
+  title?: string;
+  subtitle?: string;
+  discount?: string;
+  description?: string;
+  buttonText?: string;
+  buttonUrl?: string;
+  desktopImage?: string;
+  mobileImage?: string;
+  badge?: string;
+  textColor?: string;
+  ctaColor?: string;
+  priority?: number;
+  active?: boolean;
+  startDate?: string;
+  endDate?: string;
+  // Compatibility with mock/discount fields:
+  code?: string;
+  discountText?: string;
+  minimumOrderText?: string;
+  isAutomatic?: boolean;
+}
+
+export function getHeroBanners(nodes: any[]): HeroBanner[] {
+  return nodes.map((node: any) => {
+    const fields: Record<string, any> = {};
+    node.fields.forEach((f: any) => {
+      fields[f.key] = {
+        value: f.value,
+        reference: f.reference,
+      };
+    });
+
+    const getVal = (key: string) => fields[key]?.value || undefined;
+
+    const getFileUrl = (key: string) => {
+      const ref = fields[key]?.reference;
+      if (!ref) return undefined;
+      if (ref.image?.url) return ref.image.url;
+      if (ref.url) return ref.url;
+      return undefined;
+    };
+
+    const getCollectionPath = (key: string) => {
+      const ref = fields[key]?.reference;
+      if (ref && ref.handle) {
+        return `/collections/${ref.handle}`;
+      }
+      return undefined;
+    };
+
+    return {
+      id: node.id,
+      handle: node.handle,
+      title: getVal("title"),
+      subtitle: getVal("subtitle"),
+      discount: getVal("discount"),
+      discountText: getVal("discount") || getVal("subtitle") || "",
+      description: getVal("description"),
+      buttonText: getVal("button_text"),
+      buttonUrl: getVal("link_url") || getCollectionPath("button_url") || getVal("button_url"),
+      desktopImage: getFileUrl("desktop_image"),
+      mobileImage: getFileUrl("mobile_image"),
+      badge: getVal("badge"),
+      textColor: getVal("text_color"),
+      ctaColor: getVal("cta_color"),
+      priority: getVal("priority") ? parseInt(getVal("priority"), 10) : undefined,
+      active: getVal("active") !== "false",
+      startDate: getVal("start_date"),
+      endDate: getVal("end_date"),
+    };
+  });
+}
+
+export async function Hero() {
+  let banners: HeroBanner[] = [];
+  try {
+    const res = await shopifyFetch<any>({
+      query: GET_BANNERS_AND_OFFERS,
+      variables: { first: 10 }
+    });
+
+    const heroBannersNodes = res.body?.heroBanners?.nodes || [];
+    const offersNodes = res.body?.offers?.nodes || [];
+    const combinedNodes = [...heroBannersNodes, ...offersNodes];
+    const parsed = getHeroBanners(combinedNodes);
+
+    const now = new Date();
+    banners = parsed
+      .filter((banner) => {
+        if (banner.active === false) return false;
+        
+        // Filter out any banner using the accessories-hero image
+        const imgUrl = banner.desktopImage || banner.mobileImage || "";
+        if (imgUrl.includes("accessories-hero")) return false;
+
+        if (banner.startDate) {
+          const start = new Date(banner.startDate);
+          if (!isNaN(start.getTime()) && start > now) return false;
+        }
+        if (banner.endDate) {
+          const end = new Date(banner.endDate);
+          if (!isNaN(end.getTime()) && end < now) return false;
+        }
+        return true;
+      })
+      .sort((a, b) => (a.priority || 0) - (b.priority || 0));
+  } catch (err) {
+    console.error("Failed to query Hero Banners from Shopify Metaobjects:", err);
+  }
+
+  if (banners.length === 0) {
+    return null;
+  }
+
+  return <HeroCarousel initialDiscounts={banners} />;
 }

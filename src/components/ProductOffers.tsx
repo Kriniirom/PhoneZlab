@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Tag, HelpCircle, Copy, Check } from "lucide-react";
 import type { ShopifyProduct } from "@/types/shopify";
-import { STORE_COUPONS } from "@/config/offers";
+import { parseCouponsFromProduct } from "@/config/offers";
 
 interface Offer {
   type: string;
@@ -112,6 +112,12 @@ export function ProductOffers({ product }: ProductOffersProps) {
   };
 
   const bankOffers = parseOffers(product);
+  const coupons = parseCouponsFromProduct(product);
+
+  // If there are no offers or coupons, keep the UI clean
+  if (bankOffers.length === 0 && coupons.length === 0) {
+    return null;
+  }
 
   return (
     <div className="mt-6 border border-green-100 bg-green-50/20 p-4 rounded-sm">
@@ -121,48 +127,50 @@ export function ProductOffers({ product }: ProductOffersProps) {
       </div>
 
       {/* Branded Store Coupons */}
-      <div className="mb-5">
-        <span className="text-xs font-bold text-gray-500 block mb-2.5 uppercase tracking-wider">Coupons</span>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {STORE_COUPONS.map((coupon) => (
-            <div key={coupon.code} className="bg-white border border-gray-150 rounded-sm p-3 flex flex-col justify-between gap-1.5 shadow-sm hover:border-gray-300 transition-colors">
-              <div className="flex items-center justify-between">
-                <span className="font-mono font-bold text-gray-800 bg-gray-100 px-2 py-0.5 rounded-sm border border-gray-200 text-xs uppercase select-all">
-                  {coupon.code}
-                </span>
-                <button
-                  onClick={() => handleCopy(coupon.code)}
-                  className="text-[#2874f0] hover:text-[#1a5ec7] font-bold text-xs cursor-pointer uppercase select-none transition-colors border border-[#2874f0]/20 hover:border-[#2874f0]/40 px-2 py-0.5 rounded-sm flex items-center gap-1"
-                >
-                  {copiedCode === coupon.code ? (
-                    <>
-                      <Check className="w-3 h-3" />
-                      <span>Copied</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3 h-3" />
-                      <span>Copy</span>
-                    </>
-                  )}
-                </button>
+      {coupons.length > 0 && (
+        <div className="mb-5">
+          <span className="text-xs font-bold text-gray-500 block mb-2.5 uppercase tracking-wider">Coupons</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {coupons.map((coupon) => (
+              <div key={coupon.code} className="bg-white border border-gray-150 rounded-sm p-3 flex flex-col justify-between gap-1.5 shadow-sm hover:border-gray-300 transition-colors">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono font-bold text-gray-800 bg-gray-100 px-2 py-0.5 rounded-sm border border-gray-200 text-xs uppercase select-all">
+                    {coupon.code}
+                  </span>
+                  <button
+                    onClick={() => handleCopy(coupon.code)}
+                    className="text-[#2874f0] hover:text-[#1a5ec7] font-bold text-xs cursor-pointer uppercase select-none transition-colors border border-[#2874f0]/20 hover:border-[#2874f0]/40 px-2 py-0.5 rounded-sm flex items-center gap-1"
+                  >
+                    {copiedCode === coupon.code ? (
+                      <>
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Copied</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5" />
+                        <span>Copy</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+                <div className="mt-0.5">
+                  <span className="text-xs font-bold text-gray-850 block">
+                    {coupon.title}
+                  </span>
+                  <p className="text-[11px] text-[#878787] mt-0.5 leading-snug">
+                    {coupon.description}
+                  </p>
+                </div>
               </div>
-              <div className="mt-0.5">
-                <span className="text-xs font-bold text-gray-850 block">
-                  {coupon.title} ({coupon.discountValueText})
-                </span>
-                <p className="text-[11px] text-[#878787] mt-0.5 leading-snug">
-                  {coupon.description}
-                </p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Bank & Special Offers */}
       {bankOffers.length > 0 && (
-        <div className="border-t border-green-100/30 pt-4">
+        <div className={coupons.length > 0 ? "border-t border-green-100/30 pt-4" : ""}>
           <span className="text-xs font-bold text-gray-500 block mb-3 uppercase tracking-wider">Special Bank Deals</span>
           <ul className="space-y-3">
             {bankOffers.map((offer, idx) => (

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import type { ShopifyCart } from "@/types/shopify";
 import { 
   ShoppingBag, 
@@ -14,7 +14,7 @@ import {
   Tag
 } from "lucide-react";
 import { updateCartItemAction, removeCartItemAction, updateCartDiscountCodesAction } from "@/features/cart/actions";
-import { STORE_COUPONS } from "@/config/offers";
+import { parseCouponsFromProduct, CouponOffer } from "@/config/offers";
 
 interface CartClientProps {
   initialCart: ShopifyCart | null;
@@ -176,6 +176,17 @@ export function CartClient({ initialCart }: CartClientProps) {
   const cartLines = (cart?.lines.edges.map(edge => edge.node) || []).filter(
     line => line?.merchandise?.product && line?.merchandise?.price
   );
+
+  const availableCoupons = useMemo(() => {
+    const map = new Map<string, CouponOffer>();
+    cartLines.forEach((line) => {
+      const lineCoupons = parseCouponsFromProduct(line.merchandise.product);
+      lineCoupons.forEach((coupon) => {
+        map.set(coupon.code, coupon);
+      });
+    });
+    return Array.from(map.values());
+  }, [cartLines]);
 
   const totalQuantity = cartLines.reduce((sum, line) => sum + line.quantity, 0);
   
@@ -404,49 +415,51 @@ export function CartClient({ initialCart }: CartClientProps) {
               )}
 
               {/* Browse available coupons */}
-              <div className="mt-4 pt-3 border-t border-gray-100">
-                <span className="text-xs font-bold text-gray-500 block mb-2.5 uppercase tracking-wider">Available Coupons</span>
-                <div className="space-y-2 max-h-[240px] overflow-y-auto pr-1">
-                  {STORE_COUPONS.map((coupon) => {
-                    const isApplied = cart?.discountCodes?.some(dc => dc.code === coupon.code && dc.applicable);
-                    
-                    return (
-                      <div key={coupon.code} className="border border-gray-100 rounded-sm bg-gray-50/50 p-2.5 flex flex-col gap-1 text-xs">
-                        <div className="flex items-center justify-between">
-                          <span className="font-mono font-bold text-gray-800 bg-gray-100 px-1.5 py-0.5 rounded border border-gray-200 uppercase">
-                            {coupon.code}
-                          </span>
-                          <button
-                            onClick={() => isApplied ? handleRemoveDiscount(coupon.code) : handleApplyDiscountWithCode(coupon.code)}
-                            disabled={isApplyingDiscount}
-                            className={`font-bold uppercase tracking-wider cursor-pointer text-[10px] select-none ${
-                              isApplied 
-                                ? "text-red-500 hover:text-red-700" 
-                                : "text-[#2874f0] hover:text-[#1a5ec7] disabled:opacity-40"
-                            }`}
-                          >
-                            {isApplied ? "Remove" : "Apply"}
-                          </button>
-                        </div>
-                        <span className="font-bold text-gray-800 mt-1">{coupon.title}</span>
-                        <p className="text-[#878787] mt-0.5 leading-snug">{coupon.description}</p>
-                        
-                        {totalOriginalSubtotal < coupon.minimumOrder ? (
-                          <span className="text-[10px] text-amber-600 font-medium mt-1 bg-amber-50 px-1 py-0.5 rounded-sm w-fit leading-none">
-                            Add {formatter.format(coupon.minimumOrder - totalOriginalSubtotal)} more to unlock
-                          </span>
-                        ) : (
-                          isApplied && discountAmount > 0 && (
-                            <span className="text-[10px] text-green-600 font-bold mt-1 bg-green-50 px-1 py-0.5 rounded-sm w-fit leading-none">
-                              ✓ You saved {formatter.format(discountAmount)}!
+              {availableCoupons.length > 0 && (
+                <div className="mt-4 pt-3 border-t border-gray-100">
+                  <span className="text-xs font-bold text-gray-500 block mb-2.5 uppercase tracking-wider">Available Coupons</span>
+                  <div className="space-y-2 max-h-[240px] overflow-y-auto pr-1">
+                    {availableCoupons.map((coupon) => {
+                      const isApplied = cart?.discountCodes?.some(dc => dc.code === coupon.code && dc.applicable);
+                      
+                      return (
+                        <div key={coupon.code} className="border border-gray-100 rounded-sm bg-gray-50/50 p-2.5 flex flex-col gap-1 text-xs">
+                          <div className="flex items-center justify-between">
+                            <span className="font-mono font-bold text-gray-800 bg-gray-100 px-1.5 py-0.5 rounded border border-gray-200 uppercase">
+                              {coupon.code}
                             </span>
-                          )
-                        )}
-                      </div>
-                    );
-                  })}
+                            <button
+                              onClick={() => isApplied ? handleRemoveDiscount(coupon.code) : handleApplyDiscountWithCode(coupon.code)}
+                              disabled={isApplyingDiscount}
+                              className={`font-bold uppercase tracking-wider cursor-pointer text-[10px] select-none ${
+                                isApplied 
+                                  ? "text-red-500 hover:text-red-700" 
+                                  : "text-[#2874f0] hover:text-[#1a5ec7] disabled:opacity-40"
+                              }`}
+                            >
+                               {isApplied ? "Remove" : "Apply"}
+                            </button>
+                          </div>
+                          <span className="font-bold text-gray-800 mt-1">{coupon.title}</span>
+                          <p className="text-[#878787] mt-0.5 leading-snug">{coupon.description}</p>
+                          
+                          {totalOriginalSubtotal < coupon.minimumOrder ? (
+                            <span className="text-[10px] text-amber-600 font-medium mt-1 bg-amber-50 px-1 py-0.5 rounded-sm w-fit leading-none">
+                              Add {formatter.format(coupon.minimumOrder - totalOriginalSubtotal)} more to unlock
+                            </span>
+                          ) : (
+                            isApplied && discountAmount > 0 && (
+                              <span className="text-[10px] text-green-600 font-bold mt-1 bg-green-50 px-1 py-0.5 rounded-sm w-fit leading-none">
+                                ✓ You saved {formatter.format(discountAmount)}!
+                              </span>
+                            )
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* Price details card */}
@@ -587,55 +600,57 @@ export function CartClient({ initialCart }: CartClientProps) {
               )}
 
               {/* Coupons List */}
-              <div className="space-y-3 pt-2">
-                <span className="text-xs font-bold text-gray-500 block uppercase tracking-wider">Available Coupons</span>
-                <div className="space-y-2.5">
-                  {STORE_COUPONS.map((coupon) => {
-                    const isApplied = cart?.discountCodes?.some(dc => dc.code === coupon.code && dc.applicable);
-                    
-                    return (
-                      <div key={coupon.code} className="border border-gray-100 rounded-sm bg-gray-50/50 p-3.5 flex flex-col gap-1.5 text-xs">
-                        <div className="flex items-center justify-between">
-                          <span className="font-mono font-bold text-gray-800 bg-gray-100 px-2 py-0.5 rounded border border-gray-200 uppercase">
-                            {coupon.code}
-                          </span>
-                          <button
-                            onClick={() => {
-                              if (isApplied) {
-                                handleRemoveDiscount(coupon.code);
-                              } else {
-                                handleApplyDiscountWithCode(coupon.code);
-                              }
-                            }}
-                            disabled={isApplyingDiscount}
-                            className={`font-bold uppercase tracking-wider cursor-pointer text-xs select-none ${
-                              isApplied 
-                                ? "text-red-500 hover:text-red-700" 
-                                : "text-[#2874f0] hover:text-[#1a5ec7] disabled:opacity-40"
-                            }`}
-                          >
-                            {isApplied ? "Remove" : "Apply"}
-                          </button>
-                        </div>
-                        <span className="font-bold text-gray-800 mt-1">{coupon.title}</span>
-                        <p className="text-[#878787] mt-0.5 leading-snug">{coupon.description}</p>
-                        
-                        {totalOriginalSubtotal < coupon.minimumOrder ? (
-                          <span className="text-[10px] text-amber-600 font-medium mt-1 bg-amber-50 px-1 py-0.5 rounded-sm w-fit leading-none">
-                            Add {formatter.format(coupon.minimumOrder - totalOriginalSubtotal)} more to unlock
-                          </span>
-                        ) : (
-                          isApplied && discountAmount > 0 && (
-                            <span className="text-[10px] text-green-600 font-bold mt-1 bg-green-50 px-1 py-0.5 rounded-sm w-fit leading-none">
-                              ✓ You saved {formatter.format(discountAmount)}!
+              {availableCoupons.length > 0 && (
+                <div className="space-y-3 pt-2">
+                  <span className="text-xs font-bold text-gray-500 block uppercase tracking-wider">Available Coupons</span>
+                  <div className="space-y-2.5">
+                    {availableCoupons.map((coupon) => {
+                      const isApplied = cart?.discountCodes?.some(dc => dc.code === coupon.code && dc.applicable);
+                      
+                      return (
+                        <div key={coupon.code} className="border border-gray-100 rounded-sm bg-gray-50/50 p-3.5 flex flex-col gap-1.5 text-xs">
+                          <div className="flex items-center justify-between">
+                            <span className="font-mono font-bold text-gray-800 bg-gray-100 px-2 py-0.5 rounded border border-gray-200 uppercase">
+                              {coupon.code}
                             </span>
-                          )
-                        )}
-                      </div>
-                    );
-                  })}
+                            <button
+                              onClick={() => {
+                                if (isApplied) {
+                                  handleRemoveDiscount(coupon.code);
+                                } else {
+                                  handleApplyDiscountWithCode(coupon.code);
+                                }
+                              }}
+                              disabled={isApplyingDiscount}
+                              className={`font-bold uppercase tracking-wider cursor-pointer text-xs select-none ${
+                                isApplied 
+                                  ? "text-red-500 hover:text-red-700" 
+                                  : "text-[#2874f0] hover:text-[#1a5ec7] disabled:opacity-40"
+                              }`}
+                            >
+                              {isApplied ? "Remove" : "Apply"}
+                            </button>
+                          </div>
+                          <span className="font-bold text-gray-800 mt-1">{coupon.title}</span>
+                          <p className="text-[#878787] mt-0.5 leading-snug">{coupon.description}</p>
+                          
+                          {totalOriginalSubtotal < coupon.minimumOrder ? (
+                            <span className="text-[10px] text-amber-600 font-medium mt-1 bg-amber-50 px-1 py-0.5 rounded-sm w-fit leading-none">
+                              Add {formatter.format(coupon.minimumOrder - totalOriginalSubtotal)} more to unlock
+                            </span>
+                          ) : (
+                            isApplied && discountAmount > 0 && (
+                              <span className="text-[10px] text-green-600 font-bold mt-1 bg-green-50 px-1 py-0.5 rounded-sm w-fit leading-none">
+                                ✓ You saved {formatter.format(discountAmount)}!
+                              </span>
+                            )
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
           </div>

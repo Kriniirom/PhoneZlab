@@ -53,6 +53,10 @@ export const cartSnippet = /* GraphQL */ `
                 id
                 handle
                 title
+                tags
+                offersMetafield: metafield(namespace: "custom", key: "offers") {
+                  value
+                }
               }
             }
           }

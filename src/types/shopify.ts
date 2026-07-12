@@ -88,6 +88,10 @@ export interface ShopifyCartLine {
       id: string;
       handle: string;
       title: string;
+      tags?: string[];
+      offersMetafield?: {
+        value: string;
+      } | null;
     };
   };
   discountAllocations?: {

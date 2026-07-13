@@ -12,22 +12,30 @@ export function PWARegister() {
             registration.unregister().then((success) => {
               if (success) {
                 console.log("Dev Service Worker unregistered successfully to allow Fast Refresh.");
-                // Force reload once to clear active service worker control
                 window.location.reload();
               }
             });
           }
         });
       } else {
-        // Register service worker normally in production
-        navigator.serviceWorker
-          .register("/sw.js")
-          .then((reg) => {
-            console.log("Service Worker registered successfully with scope:", reg.scope);
-          })
-          .catch((err) => {
-            console.error("Service Worker registration failed:", err);
-          });
+        // Clean, standard registration script that executes after load event
+        const registerSW = () => {
+          navigator.serviceWorker
+            .register("/service-worker.js")
+            .then((reg) => {
+              console.log("Service Worker registered successfully with scope:", reg.scope);
+            })
+            .catch((err) => {
+              console.error("Service Worker registration failed:", err);
+            });
+        };
+
+        if (document.readyState === "complete") {
+          registerSW();
+        } else {
+          window.addEventListener("load", registerSW);
+          return () => window.removeEventListener("load", registerSW);
+        }
       }
     }
   }, []);

@@ -1,12 +1,12 @@
-const CACHE_NAME = 'phonezlab-cache-v1';
+const CACHE_NAME = 'phonezlab-cache-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/manifest.json',
   '/favicon.ico',
-  '/icon.svg'
+  '/icon-192.png',
+  '/icon-512.png'
 ];
 
-// Check if running on localhost (development)
 const isLocalhost = 
   self.location.hostname === 'localhost' || 
   self.location.hostname === '127.0.0.1' || 
@@ -57,7 +57,7 @@ if (isLocalhost) {
   });
 
   self.addEventListener('fetch', (event) => {
-    // Only handle GET requests and skip internal Next.js / webpack requests
+    // Only handle GET requests and skip internal Next.js / webpack / API requests
     if (
       event.request.method !== 'GET' || 
       !event.request.url.startsWith(self.location.origin) ||
@@ -75,7 +75,8 @@ if (isLocalhost) {
               cache.put(event.request, networkResponse.clone());
             }
             return networkResponse;
-          }).catch(() => {
+          }).catch((error) => {
+            console.warn('Fetch failed; returning cached response if available.', error);
             return cachedResponse;
           });
 

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Rounded blue background matching PhoneZlab brand color -->
+  <rect width="512" height="512" rx="112" fill="#2874f0"/>
+  <!-- Polished logo symbol scaled up and centered -->
+  <g transform="matrix(15, 0, 0, 15, 76, 76)">
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M7 8h10l-4.5 4.5" />
+      <path d="M11.5 11.5l-4.5 4H17" />
+    </svg>
+  </g>
+</svg>

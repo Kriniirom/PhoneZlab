@@ -19,6 +19,9 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     title: "PhoneZlab",
   },
+  icons: {
+    apple: "/icon-192.png",
+  },
 };
 
 export const viewport: Viewport = {

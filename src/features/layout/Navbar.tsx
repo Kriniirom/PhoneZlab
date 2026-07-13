@@ -23,6 +23,8 @@ export function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
+  const displayedResults = results.slice(0, 8);
+
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
     const systemPrefersDark = typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -103,7 +105,7 @@ export function Navbar() {
       lastRequestTime.current = requestTime;
 
       try {
-        const res = await searchProductsAction(query.trim(), 6);
+        const res = await searchProductsAction(query.trim(), 12);
         if (requestTime >= lastRequestTime.current) {
           if (res.success && res.products) {
             setResults(res.products);
@@ -143,14 +145,14 @@ export function Navbar() {
       setFocusedIndex(-1);
       e.preventDefault();
     } else if (e.key === "ArrowDown") {
-      setFocusedIndex((prev) => (prev < results.length - 1 ? prev + 1 : prev));
+      setFocusedIndex((prev) => (prev < displayedResults.length - 1 ? prev + 1 : prev));
       e.preventDefault();
     } else if (e.key === "ArrowUp") {
       setFocusedIndex((prev) => (prev > -1 ? prev - 1 : prev));
       e.preventDefault();
     } else if (e.key === "Enter") {
-      if (focusedIndex >= 0 && focusedIndex < results.length) {
-        const selectedProduct = results[focusedIndex];
+      if (focusedIndex >= 0 && focusedIndex < displayedResults.length) {
+        const selectedProduct = displayedResults[focusedIndex];
         if (query.trim()) {
           trackRecentSearch(query.trim());
         }
@@ -271,13 +273,13 @@ export function Navbar() {
             {isOpen && query.trim().length >= 2 && (
               <div className="absolute left-0 right-0 mt-1.5 bg-white text-black rounded-lg shadow-xl border border-gray-100 z-50 overflow-hidden max-h-[420px] flex flex-col">
                 <div role="listbox" className="overflow-y-auto divide-y divide-gray-50 flex-1">
-                  {loading && results.length === 0 ? (
+                  {loading && displayedResults.length === 0 ? (
                     <div className="py-8 text-center text-gray-400 text-xs flex flex-col items-center justify-center gap-2">
                       <Loader2 className="w-5 h-5 text-[#2874f0] animate-spin" />
                       <span>Searching Shopify...</span>
                     </div>
-                  ) : results.length > 0 ? (
-                    results.map((product, index) => {
+                  ) : displayedResults.length > 0 ? (
+                    displayedResults.map((product, index) => {
                       const variant = product.variants.edges[0]?.node;
                       const price = variant?.price;
                       const image = variant?.image?.url || product.featuredImage?.url;
@@ -352,7 +354,7 @@ export function Navbar() {
                 </div>
  
                 {/* View all results button */}
-                {results.length > 0 && (
+                {displayedResults.length > 0 && (
                   <div className="bg-gray-50 p-2.5 border-t border-gray-100 text-center">
                     <button
                       onClick={(e) => {

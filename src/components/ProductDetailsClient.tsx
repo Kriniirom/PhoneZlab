@@ -21,6 +21,9 @@ import {
 import { createCartAction, addCartItemAction } from "@/features/cart/actions";
 import { ProductOffers } from "./ProductOffers";
 import { trackRecentlyViewed } from "@/features/search/tracking/recentlyViewed";
+import { getProductReviewsAction } from "@/features/reviews/actions";
+import { ProductReviews } from "./ProductReviews";
+import type { JudgemeReviewsData } from "@/features/reviews/api";
 
 interface ProductDetailsClientProps {
   product: ShopifyProduct;
@@ -28,6 +31,21 @@ interface ProductDetailsClientProps {
 }
 
 export function ProductDetailsClient({ product, relatedProducts = [] }: ProductDetailsClientProps) {
+  const [reviewsData, setReviewsData] = useState<JudgemeReviewsData>({
+    averageRating: null,
+    reviewCount: 0,
+    ratingDistribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
+    reviews: []
+  });
+
+  useEffect(() => {
+    if (product && product.id) {
+      getProductReviewsAction(product.id, product.handle)
+        .then((data) => setReviewsData(data))
+        .catch((err) => console.error("Error loading product reviews:", err));
+    }
+  }, [product]);
+
   const images = useMemo(() => product.images.edges.map((edge) => edge.node), [product.images.edges]);
   const variants = useMemo(() => product.variants.edges.map((edge) => edge.node), [product.variants.edges]);
 
@@ -327,6 +345,25 @@ export function ProductDetailsClient({ product, relatedProducts = [] }: ProductD
               <h1 className="text-xl md:text-2xl font-medium text-gray-900 mt-1 leading-snug">
                 {product.title}
               </h1>
+              {reviewsData.reviewCount > 0 && reviewsData.averageRating && (
+                <div className="flex items-center gap-2 mt-2">
+                  <div className="flex items-center gap-0.5">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`w-3.5 h-3.5 ${
+                          i < Math.round(reviewsData.averageRating!)
+                            ? "text-[#ffc200] fill-[#ffc200]"
+                            : "text-gray-200 fill-gray-200"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-xs text-[#2874f0] font-bold hover:underline cursor-pointer">
+                    {reviewsData.averageRating} ({reviewsData.reviewCount} {reviewsData.reviewCount === 1 ? "review" : "reviews"})
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Price display */}
@@ -510,6 +547,9 @@ export function ProductDetailsClient({ product, relatedProducts = [] }: ProductD
             </div>
           </div>
         )}
+
+        {/* Customer Reviews Section */}
+        <ProductReviews data={reviewsData} />
 
       </div>
     </div>

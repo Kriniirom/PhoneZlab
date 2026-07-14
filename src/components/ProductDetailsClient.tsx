@@ -549,7 +549,11 @@ export function ProductDetailsClient({ product, relatedProducts = [] }: ProductD
         )}
 
         {/* Customer Reviews Section */}
-        <ProductReviews data={reviewsData} />
+        <ProductReviews 
+          data={reviewsData} 
+          productId={product.id} 
+          productHandle={product.handle} 
+        />
 
       </div>
     </div>

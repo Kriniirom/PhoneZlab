@@ -39,6 +39,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${inter.variable} h-full antialiased`}
+      data-scroll-behavior="smooth"
     >
       <body className="min-h-full flex flex-col selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
         <PWARegister />

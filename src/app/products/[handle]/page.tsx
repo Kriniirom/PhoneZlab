@@ -2,6 +2,9 @@ import { getProductByHandle, getProducts } from "@/features/product/api";
 import { ProductDetailsClient } from "@/components/ProductDetailsClient";
 import type { Metadata } from "next";
 import type { ShopifyProduct } from "@/types/shopify";
+import { generatePageMetadata, getProductSchema, getBreadcrumbSchema } from "@/utils/seo";
+import { getProductReviews } from "@/features/reviews/api";
+import { StructuredData } from "@/components/StructuredData";
 
 type Props = {
   params: Promise<{ handle: string }>;
@@ -23,16 +26,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  return {
-    title: `${product.title} | PhoneZlab`,
+  return generatePageMetadata({
+    title: product.seo.title || product.title,
     description: product.seo.description || product.description || `Buy ${product.title} from PhoneZlab.`,
-  };
+    canonicalPath: `/products/${product.handle}`,
+    imageUrl: product.featuredImage?.url || undefined,
+    imageAlt: product.featuredImage?.altText || product.title,
+    ogType: 'website',
+  });
 }
 
 export default async function ProductDetailPage({ params }: Props) {
   const resolvedParams = await params;
   let product: ShopifyProduct | null = null;
   let relatedProducts: ShopifyProduct[] = [];
+  let reviewsData = undefined;
   let error = false;
 
   try {
@@ -42,6 +50,13 @@ export default async function ProductDetailPage({ params }: Props) {
       // Load other products to show in the related products section
       const allProducts = await getProducts(10);
       relatedProducts = allProducts.filter((p) => p.id !== product?.id);
+
+      // Fetch Judge.me reviews on the server side for schema injection
+      try {
+        reviewsData = await getProductReviews(product.id, product.handle);
+      } catch (reviewsErr) {
+        console.error("Failed to fetch product reviews on server:", reviewsErr);
+      }
     }
   } catch (e) {
     console.error("Error loading product detail page:", e);
@@ -60,7 +75,21 @@ export default async function ProductDetailPage({ params }: Props) {
     );
   }
 
+  const productSchema = getProductSchema(product, reviewsData);
+  const breadcrumbSchema = getBreadcrumbSchema([
+    { name: "Home", item: "/" },
+    { name: "Products", item: "/products" },
+    { name: product.title, item: `/products/${product.handle}` }
+  ]);
+
   return (
-    <ProductDetailsClient product={product} relatedProducts={relatedProducts} />
+    <>
+      <StructuredData data={[productSchema, breadcrumbSchema]} />
+      <ProductDetailsClient 
+        product={product} 
+        relatedProducts={relatedProducts} 
+        initialReviewsData={reviewsData}
+      />
+    </>
   );
 }

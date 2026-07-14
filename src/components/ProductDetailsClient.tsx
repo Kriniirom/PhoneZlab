@@ -28,23 +28,31 @@ import type { JudgemeReviewsData } from "@/features/reviews/api";
 interface ProductDetailsClientProps {
   product: ShopifyProduct;
   relatedProducts?: ShopifyProduct[];
+  initialReviewsData?: JudgemeReviewsData;
 }
 
-export function ProductDetailsClient({ product, relatedProducts = [] }: ProductDetailsClientProps) {
-  const [reviewsData, setReviewsData] = useState<JudgemeReviewsData>({
-    averageRating: null,
-    reviewCount: 0,
-    ratingDistribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    reviews: []
+export function ProductDetailsClient({ product, relatedProducts = [], initialReviewsData }: ProductDetailsClientProps) {
+  const [reviewsData, setReviewsData] = useState<JudgemeReviewsData>(() => {
+    return initialReviewsData || {
+      averageRating: null,
+      reviewCount: 0,
+      ratingDistribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
+      reviews: []
+    };
   });
 
   useEffect(() => {
+    if (initialReviewsData) {
+      setReviewsData(initialReviewsData);
+      return;
+    }
+
     if (product && product.id) {
       getProductReviewsAction(product.id, product.handle)
         .then((data) => setReviewsData(data))
         .catch((err) => console.error("Error loading product reviews:", err));
     }
-  }, [product]);
+  }, [product, initialReviewsData]);
 
   const images = useMemo(() => product.images.edges.map((edge) => edge.node), [product.images.edges]);
   const variants = useMemo(() => product.variants.edges.map((edge) => edge.node), [product.variants.edges]);

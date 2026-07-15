@@ -150,6 +150,73 @@ export function logoutCustomer() {
   }
 }
 
+export interface FulfillmentTrackingInfo {
+  number?: string;
+  url?: string;
+  company?: string;
+}
+
+export interface FulfillmentNode {
+  id: string;
+  status: string;
+  trackingInfo: FulfillmentTrackingInfo[];
+}
+
+export interface FulfillmentConnection {
+  edges: {
+    node: FulfillmentNode;
+  }[];
+}
+
+export interface OrderLineItem {
+  id: string;
+  title: string;
+  quantity: number;
+  image?: {
+    url: string;
+    altText: string | null;
+  } | null;
+  variant?: {
+    id: string;
+    title: string;
+    image?: {
+      url: string;
+      altText: string | null;
+    } | null;
+    price: {
+      amount: string;
+      currencyCode: string;
+    };
+  } | null;
+}
+
+export interface OrderLineItemConnection {
+  edges: {
+    node: OrderLineItem;
+  }[];
+}
+
+export interface OrderNode {
+  id: string;
+  name: string;
+  orderNumber: string;
+  processedAt: string;
+  financialStatus: string;
+  fulfillmentStatus: string;
+  totalPrice: {
+    amount: string;
+    currencyCode: string;
+  };
+  lineItems: OrderLineItemConnection;
+  fulfillments: FulfillmentConnection;
+}
+
+export interface OrderConnection {
+  edges: {
+    node: OrderNode;
+  }[];
+}
+
 export interface CustomerProfileData {
   customer: {
     firstName?: string;
@@ -160,6 +227,7 @@ export interface CustomerProfileData {
     phoneNumber?: {
       phoneNumber: string;
     };
+    orders: OrderConnection;
   } | null;
 }
 
@@ -181,6 +249,60 @@ export async function fetchCustomerProfile(token: string): Promise<CustomerProfi
         }
         phoneNumber {
           phoneNumber
+        }
+        orders(first: 20) {
+          edges {
+            node {
+              id
+              name
+              orderNumber
+              processedAt
+              financialStatus
+              fulfillmentStatus
+              totalPrice {
+                amount
+                currencyCode
+              }
+              lineItems(first: 20) {
+                edges {
+                  node {
+                    id
+                    title
+                    quantity
+                    image {
+                      url
+                      altText
+                    }
+                    variant {
+                      id
+                      title
+                      image {
+                        url
+                        altText
+                      }
+                      price {
+                        amount
+                        currencyCode
+                      }
+                    }
+                  }
+                }
+              }
+              fulfillments(first: 10) {
+                edges {
+                  node {
+                    id
+                    status
+                    trackingInfo {
+                      number
+                      url
+                      company
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { ShieldCheck, Star } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { redirectToShopifyLogin, getCustomerToken } from "@/utils/shopifyAuth";
+import { redirectToShopifyLogin, getCustomerToken, setCustomerToken } from "@/utils/shopifyAuth";
 
 export default function LoginPage() {
   const [error, setError] = useState("");
@@ -23,6 +23,13 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
     try {
+      // If we are simulating in mock mode, bypass real OAuth redirect
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("mock") === "true") {
+        setCustomerToken("mock_customer_token", 7200);
+        router.replace("/profile");
+        return;
+      }
       await redirectToShopifyLogin();
     } catch (err: any) {
       console.error("Shopify login error:", err);

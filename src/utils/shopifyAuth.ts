@@ -234,6 +234,177 @@ export interface CustomerProfileData {
 // Queries Shopify Customer Account GraphQL API for customer profile data.
 // Note: Authorization header must contain the RAW token (no Bearer prefix).
 export async function fetchCustomerProfile(token: string): Promise<CustomerProfileData> {
+  if (token === "mock_customer_token" || token.startsWith("mock")) {
+    return {
+      customer: {
+        firstName: "Irom",
+        lastName: "Krinivash",
+        emailAddress: {
+          emailAddress: "irom.krinivash@phonezlab.com"
+        },
+        phoneNumber: {
+          phoneNumber: "+91 9876543210"
+        },
+        orders: {
+          edges: [
+            {
+              node: {
+                id: "gid://shopify/Order/mock-order-1",
+                name: "#PZ-1089",
+                orderNumber: "1089",
+                processedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+                financialStatus: "PAID",
+                fulfillmentStatus: "FULFILLED",
+                totalPrice: {
+                  amount: "1899.00",
+                  currencyCode: "INR"
+                },
+                lineItems: {
+                  edges: [
+                    {
+                      node: {
+                        id: "gid://shopify/OrderLineItem/mock-item-1",
+                        title: "Luxury Alcantara Case - Midnight Black for iPhone 15 Pro Max",
+                        quantity: 1,
+                        image: {
+                          url: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=150&q=80",
+                          altText: "Midnight Black Case"
+                        },
+                        variant: {
+                          id: "gid://shopify/ProductVariant/mock-variant-1",
+                          title: "iPhone 15 Pro Max / Midnight Black",
+                          price: {
+                            amount: "1899.00",
+                            currencyCode: "INR"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                fulfillments: {
+                  edges: [
+                    {
+                      node: {
+                        id: "gid://shopify/Fulfillment/mock-fulfillment-1",
+                        status: "SUCCESS",
+                        trackingInfo: [
+                          {
+                            company: "Delhivery",
+                            number: "DEL9876543210",
+                            url: "https://www.delhivery.com/track/package/DEL9876543210"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              node: {
+                id: "gid://shopify/Order/mock-order-2",
+                name: "#PZ-1088",
+                orderNumber: "1088",
+                processedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+                financialStatus: "PAID",
+                fulfillmentStatus: "PARTIALLY_FULFILLED",
+                totalPrice: {
+                  amount: "3798.00",
+                  currencyCode: "INR"
+                },
+                lineItems: {
+                  edges: [
+                    {
+                      node: {
+                        id: "gid://shopify/OrderLineItem/mock-item-2",
+                        title: "Tempered Glass Screen Protector - Ultra Clear",
+                        quantity: 2,
+                        image: {
+                          url: "https://images.unsplash.com/photo-1581090700227-1e37b190418e?auto=format&fit=crop&w=150&q=80",
+                          altText: "Screen Protector"
+                        },
+                        variant: {
+                          id: "gid://shopify/ProductVariant/mock-variant-2",
+                          title: "Default Title",
+                          price: {
+                            amount: "1899.00",
+                            currencyCode: "INR"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                fulfillments: {
+                  edges: [
+                    {
+                      node: {
+                        id: "gid://shopify/Fulfillment/mock-fulfillment-2-1",
+                        status: "SUCCESS",
+                        trackingInfo: [
+                          {
+                            company: "Blue Dart",
+                            number: "BD123456789",
+                            url: "https://www.bluedart.com/tracking?awb=BD123456789"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      node: {
+                        id: "gid://shopify/Fulfillment/mock-fulfillment-2-2",
+                        status: "PENDING",
+                        trackingInfo: []
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              node: {
+                id: "gid://shopify/Order/mock-order-3",
+                name: "#PZ-1087",
+                orderNumber: "1087",
+                processedAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+                financialStatus: "PAID",
+                fulfillmentStatus: "UNFULFILLED",
+                totalPrice: {
+                  amount: "999.00",
+                  currencyCode: "INR"
+                },
+                lineItems: {
+                  edges: [
+                    {
+                      node: {
+                        id: "gid://shopify/OrderLineItem/mock-item-3",
+                        title: "Silicone Case Overlay - Amber Yellow",
+                        quantity: 1,
+                        image: null,
+                        variant: {
+                          id: "gid://shopify/ProductVariant/mock-variant-3",
+                          title: "iPhone 15 Pro / Amber Yellow",
+                          price: {
+                            amount: "999.00",
+                            currencyCode: "INR"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                fulfillments: {
+                  edges: []
+                }
+              }
+            }
+          ]
+        }
+      }
+    };
+  }
+
   const shopId = process.env.NEXT_PUBLIC_SHOPIFY_CUSTOMER_ACCOUNT_SHOP_ID;
   if (!shopId) {
     throw new Error("Missing Shop ID configuration");

@@ -27,7 +27,6 @@ import {
   CheckCircle2,
   Clock,
   ArrowLeft,
-  Star,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -166,6 +165,7 @@ export default function ProfilePage() {
     : "";
 
   const totalSpent = profile?.orders?.reduce((sum, o) => sum + parseFloat(o.totalPrice?.amount || "0"), 0) ?? 0;
+  void totalSpent; // retained for potential future use
 
   /* ── Loading ──────────────────────────────────────────────────── */
   if (loading) {
@@ -255,45 +255,6 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* Stat Cards — float over the banner */}
-      <div className="max-w-3xl mx-auto px-4 md:px-8 -mt-12 relative z-20">
-        <div className="grid grid-cols-3 gap-3">
-          {[
-            {
-              label: "Orders",
-              value: profile?.orders?.length ?? 0,
-              icon: Package,
-              color: "from-[#2874f0] to-[#1a5ec7]",
-            },
-            {
-              label: "Total Spent",
-              value: "₹" + totalSpent.toLocaleString("en-IN"),
-              icon: CreditCard,
-              color: "from-violet-500 to-violet-700",
-            },
-            {
-              label: "Member Since",
-              value: new Date().getFullYear().toString(),
-              icon: Star,
-              color: "from-amber-400 to-orange-500",
-            },
-          ].map((stat, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.08 }}
-              className="bg-white dark:bg-[#1a1a1e] rounded-2xl p-4 shadow-lg shadow-black/8 border border-white/60 dark:border-white/5 text-center"
-            >
-              <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center mx-auto mb-2 shadow-md`}>
-                <stat.icon className="w-4.5 h-4.5 text-white w-[18px] h-[18px]" />
-              </div>
-              <p className="text-[11px] text-gray-400 dark:text-gray-500 font-semibold uppercase tracking-wider">{stat.label}</p>
-              <p className="text-base font-black text-gray-900 dark:text-white mt-0.5 leading-none">{stat.value}</p>
-            </motion.div>
-          ))}
-        </div>
-      </div>
 
       {/* Tab Nav */}
       <div className="max-w-3xl mx-auto px-4 md:px-8 mt-6">

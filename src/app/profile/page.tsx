@@ -320,7 +320,7 @@ export default function ProfilePage() {
                           <div>
                             <span className="text-xs text-gray-400 dark:text-gray-500 block font-semibold uppercase tracking-wider">Order Reference</span>
                             <span className="font-extrabold text-sm text-gray-900 dark:text-white flex items-center gap-1.5 mt-0.5">
-                              {order.name || `#${order.orderNumber}`}
+                              {order.name}
                             </span>
                           </div>
 

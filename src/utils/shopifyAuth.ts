@@ -199,7 +199,6 @@ export interface OrderLineItemConnection {
 export interface OrderNode {
   id: string;
   name: string;
-  orderNumber: string;
   processedAt: string;
   financialStatus: string;
   fulfillmentStatus: string;
@@ -251,7 +250,6 @@ export async function fetchCustomerProfile(token: string): Promise<CustomerProfi
               node: {
                 id: "gid://shopify/Order/mock-order-1",
                 name: "#PZ-1089",
-                orderNumber: "1089",
                 processedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
                 financialStatus: "PAID",
                 fulfillmentStatus: "FULFILLED",
@@ -305,7 +303,6 @@ export async function fetchCustomerProfile(token: string): Promise<CustomerProfi
               node: {
                 id: "gid://shopify/Order/mock-order-2",
                 name: "#PZ-1088",
-                orderNumber: "1088",
                 processedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
                 financialStatus: "PAID",
                 fulfillmentStatus: "PARTIALLY_FULFILLED",
@@ -366,7 +363,6 @@ export async function fetchCustomerProfile(token: string): Promise<CustomerProfi
               node: {
                 id: "gid://shopify/Order/mock-order-3",
                 name: "#PZ-1087",
-                orderNumber: "1087",
                 processedAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
                 financialStatus: "PAID",
                 fulfillmentStatus: "UNFULFILLED",
@@ -426,7 +422,6 @@ export async function fetchCustomerProfile(token: string): Promise<CustomerProfi
             node {
               id
               name
-              orderNumber
               processedAt
               financialStatus
               fulfillmentStatus

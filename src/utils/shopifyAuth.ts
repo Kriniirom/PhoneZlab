@@ -151,7 +151,7 @@ export interface FulfillmentTrackingInfo {
 export interface FulfillmentNode {
   id: string;
   status: string;
-  trackingInfo: FulfillmentTrackingInfo[];
+  trackingInformation: FulfillmentTrackingInfo[];
 }
 
 export interface FulfillmentConnection {
@@ -264,7 +264,7 @@ export async function fetchCustomerProfile(token: string): Promise<CustomerProfi
                       node: {
                         id: "gid://shopify/Fulfillment/mock-fulfillment-1",
                         status: "SUCCESS",
-                        trackingInfo: [
+                        trackingInformation: [
                           {
                             company: "Delhivery",
                             number: "DEL9876543210",
@@ -312,7 +312,7 @@ export async function fetchCustomerProfile(token: string): Promise<CustomerProfi
                       node: {
                         id: "gid://shopify/Fulfillment/mock-fulfillment-2-1",
                         status: "SUCCESS",
-                        trackingInfo: [
+                        trackingInformation: [
                           {
                             company: "Blue Dart",
                             number: "BD123456789",
@@ -325,7 +325,7 @@ export async function fetchCustomerProfile(token: string): Promise<CustomerProfi
                       node: {
                         id: "gid://shopify/Fulfillment/mock-fulfillment-2-2",
                         status: "PENDING",
-                        trackingInfo: []
+                        trackingInformation: []
                       }
                     }
                   ]
@@ -418,7 +418,7 @@ export async function fetchCustomerProfile(token: string): Promise<CustomerProfi
                   node {
                     id
                     status
-                    trackingInfo {
+                    trackingInformation {
                       number
                       url
                       company

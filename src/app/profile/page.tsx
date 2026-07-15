@@ -339,13 +339,13 @@ export default function ProfilePage() {
 
                         {/* Order Card Line Items */}
                         <div className="divide-y divide-gray-100 dark:divide-slate-800">
-                          {order.lineItems.edges.map((lineItemEdge) => {
+                          {order.lineItems.edges.map((lineItemEdge, lineIdx) => {
                             const item = lineItemEdge.node;
-                            const itemImage = item.image?.url || item.variant?.image?.url;
-                            const itemPrice = item.variant?.price;
+                            const itemImage = item.image?.url;
+                            const itemPrice = item.totalPrice;
                             
                             return (
-                              <div key={item.id} className="flex gap-4 py-3 first:pt-0 last:pb-0 items-start">
+                              <div key={lineIdx} className="flex gap-4 py-3 first:pt-0 last:pb-0 items-start">
                                 <div className="w-16 h-20 bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded overflow-hidden flex-shrink-0 flex items-center justify-center p-1.5 relative">
                                   {itemImage ? (
                                     <img
@@ -365,11 +365,6 @@ export default function ProfilePage() {
                                   <h4 className="font-bold text-gray-900 dark:text-white line-clamp-2 leading-tight">
                                     {item.title}
                                   </h4>
-                                  {item.variant?.title && item.variant.title !== "Default Title" && (
-                                    <span className="text-[10px] text-gray-400 dark:text-gray-500 mt-1 block font-semibold">
-                                      Variant: {item.variant.title}
-                                    </span>
-                                  )}
                                   <div className="flex justify-between items-baseline mt-2">
                                     <span className="text-gray-400 font-medium">Qty: {item.quantity}</span>
                                     {itemPrice && (

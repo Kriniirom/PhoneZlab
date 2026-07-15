@@ -161,25 +161,16 @@ export interface FulfillmentConnection {
 }
 
 export interface OrderLineItem {
-  id: string;
   title: string;
   quantity: number;
   image?: {
     url: string;
     altText: string | null;
   } | null;
-  variant?: {
-    id: string;
-    title: string;
-    image?: {
-      url: string;
-      altText: string | null;
-    } | null;
-    price: {
-      amount: string;
-      currencyCode: string;
-    };
-  } | null;
+  totalPrice: {
+    amount: string;
+    currencyCode: string;
+  };
 }
 
 export interface OrderLineItemConnection {
@@ -253,20 +244,15 @@ export async function fetchCustomerProfile(token: string): Promise<CustomerProfi
                   edges: [
                     {
                       node: {
-                        id: "gid://shopify/OrderLineItem/mock-item-1",
                         title: "Luxury Alcantara Case - Midnight Black for iPhone 15 Pro Max",
                         quantity: 1,
                         image: {
                           url: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=150&q=80",
                           altText: "Midnight Black Case"
                         },
-                        variant: {
-                          id: "gid://shopify/ProductVariant/mock-variant-1",
-                          title: "iPhone 15 Pro Max / Midnight Black",
-                          price: {
-                            amount: "1899.00",
-                            currencyCode: "INR"
-                          }
+                        totalPrice: {
+                          amount: "1899.00",
+                          currencyCode: "INR"
                         }
                       }
                     }
@@ -306,20 +292,15 @@ export async function fetchCustomerProfile(token: string): Promise<CustomerProfi
                   edges: [
                     {
                       node: {
-                        id: "gid://shopify/OrderLineItem/mock-item-2",
                         title: "Tempered Glass Screen Protector - Ultra Clear",
                         quantity: 2,
                         image: {
                           url: "https://images.unsplash.com/photo-1581090700227-1e37b190418e?auto=format&fit=crop&w=150&q=80",
                           altText: "Screen Protector"
                         },
-                        variant: {
-                          id: "gid://shopify/ProductVariant/mock-variant-2",
-                          title: "Default Title",
-                          price: {
-                            amount: "1899.00",
-                            currencyCode: "INR"
-                          }
+                        totalPrice: {
+                          amount: "3798.00",
+                          currencyCode: "INR"
                         }
                       }
                     }
@@ -366,17 +347,12 @@ export async function fetchCustomerProfile(token: string): Promise<CustomerProfi
                   edges: [
                     {
                       node: {
-                        id: "gid://shopify/OrderLineItem/mock-item-3",
                         title: "Silicone Case Overlay - Amber Yellow",
                         quantity: 1,
                         image: null,
-                        variant: {
-                          id: "gid://shopify/ProductVariant/mock-variant-3",
-                          title: "iPhone 15 Pro / Amber Yellow",
-                          price: {
-                            amount: "999.00",
-                            currencyCode: "INR"
-                          }
+                        totalPrice: {
+                          amount: "999.00",
+                          currencyCode: "INR"
                         }
                       }
                     }
@@ -424,24 +400,15 @@ export async function fetchCustomerProfile(token: string): Promise<CustomerProfi
               lineItems(first: 20) {
                 edges {
                   node {
-                    id
                     title
                     quantity
                     image {
                       url
                       altText
                     }
-                    variant {
-                      id
-                      title
-                      image {
-                        url
-                        altText
-                      }
-                      price {
-                        amount
-                        currencyCode
-                      }
+                    totalPrice {
+                      amount
+                      currencyCode
                     }
                   }
                 }

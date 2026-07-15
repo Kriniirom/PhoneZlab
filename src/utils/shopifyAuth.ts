@@ -139,15 +139,7 @@ export function logoutCustomer() {
   deleteCustomerToken();
   sessionStorage.removeItem('shopify_auth_state');
   sessionStorage.removeItem('shopify_auth_verifier');
-
-  const shopId = process.env.NEXT_PUBLIC_SHOPIFY_CUSTOMER_ACCOUNT_SHOP_ID;
-  if (shopId) {
-    // Redirect to Shopify's logout endpoint, which redirects back to our login page
-    const logoutUrl = `https://shopify.com/authentication/${shopId}/logout?post_logout_redirect_uri=${encodeURIComponent(window.location.origin + '/login')}`;
-    window.location.href = logoutUrl;
-  } else {
-    window.location.href = '/login';
-  }
+  window.location.href = '/login';
 }
 
 export interface FulfillmentTrackingInfo {

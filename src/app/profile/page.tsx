@@ -9,6 +9,7 @@ import {
   OrderNode,
   FulfillmentTrackingInfo,
 } from "@/utils/shopifyAuth";
+import { updateCustomerPhone } from "@/features/profile/updatePhone";
 import {
   User,
   Mail,
@@ -27,6 +28,9 @@ import {
   CheckCircle2,
   Clock,
   ArrowLeft,
+  Pencil,
+  Check,
+  X,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -121,6 +125,61 @@ export default function ProfilePage() {
   const [error, setError] = useState<string | null>(null);
   const [profile, setProfile] = useState<CustomerProfile | null>(null);
   const [activeTab, setActiveTab] = useState<"info" | "orders">("info");
+
+  // Phone editing state
+  const [editingPhone, setEditingPhone] = useState(false);
+  const [phoneInput, setPhoneInput] = useState("");
+  const [phoneSaving, setPhoneSaving] = useState(false);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
+  const [phoneSuccess, setPhoneSuccess] = useState(false);
+
+  const handlePhoneEdit = () => {
+    // Strip +91 prefix for the input field if it exists
+    const current = profile?.phone || "";
+    const stripped = current.replace(/^\+91/, "");
+    setPhoneInput(stripped);
+    setPhoneError(null);
+    setPhoneSuccess(false);
+    setEditingPhone(true);
+  };
+
+  const handlePhoneCancel = () => {
+    setEditingPhone(false);
+    setPhoneInput("");
+    setPhoneError(null);
+  };
+
+  const handlePhoneSave = async () => {
+    const digits = phoneInput.replace(/\D/g, "");
+    if (digits.length !== 10) {
+      setPhoneError("Please enter a valid 10-digit mobile number.");
+      return;
+    }
+
+    const token = getCustomerToken();
+    if (!token) {
+      setPhoneError("Session expired. Please sign in again.");
+      return;
+    }
+
+    setPhoneSaving(true);
+    setPhoneError(null);
+
+    const result = await updateCustomerPhone(token, `+91${digits}`);
+
+    if (result.success) {
+      setProfile((prev) =>
+        prev ? { ...prev, phone: result.phone || `+91${digits}` } : prev
+      );
+      setPhoneSuccess(true);
+      setEditingPhone(false);
+      setTimeout(() => setPhoneSuccess(false), 3000);
+    } else {
+      setPhoneError(result.error || "Failed to update phone number.");
+    }
+
+    setPhoneSaving(false);
+  };
 
   useEffect(() => {
     const token = getCustomerToken();
@@ -296,11 +355,11 @@ export default function ProfilePage() {
                   <h2 className="font-bold text-gray-900 dark:text-white text-sm">Account Details</h2>
                 </div>
                 <div className="divide-y divide-gray-50 dark:divide-white/5">
+                  {/* Static fields */}
                   {[
                     { icon: User, label: "First Name", value: profile?.firstName || "Not provided" },
                     { icon: User, label: "Last Name", value: profile?.lastName || "Not provided" },
                     { icon: Mail, label: "Email Address", value: profile?.email || "Not provided" },
-                    { icon: PhoneIcon, label: "Phone Number", value: profile?.phone || "Not provided" },
                   ].map((row, i) => (
                     <div key={i} className="flex items-center gap-4 px-5 py-4">
                       <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/40 flex items-center justify-center flex-shrink-0">
@@ -313,6 +372,85 @@ export default function ProfilePage() {
                       <ChevronRight className="w-4 h-4 text-gray-300 dark:text-gray-600 flex-shrink-0" />
                     </div>
                   ))}
+
+                  {/* Editable Phone Number Row */}
+                  <div className="px-5 py-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/40 flex items-center justify-center flex-shrink-0">
+                        <PhoneIcon className="w-4 h-4 text-[#2874f0]" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Phone Number</p>
+                        {!editingPhone ? (
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <p className={`text-sm font-semibold truncate ${
+                              phoneSuccess
+                                ? "text-emerald-600 dark:text-emerald-400"
+                                : "text-gray-800 dark:text-gray-100"
+                            }`}>
+                              {phoneSuccess && <CheckCircle2 className="w-3.5 h-3.5 inline mr-1" />}
+                              {profile?.phone || "Not provided"}
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="text-sm font-semibold text-gray-500 dark:text-gray-400 select-none">+91</span>
+                            <input
+                              type="tel"
+                              value={phoneInput}
+                              onChange={(e) => {
+                                const val = e.target.value.replace(/\D/g, "").slice(0, 10);
+                                setPhoneInput(val);
+                                setPhoneError(null);
+                              }}
+                              placeholder="Enter 10-digit number"
+                              maxLength={10}
+                              autoFocus
+                              disabled={phoneSaving}
+                              className="flex-1 min-w-0 text-sm font-semibold text-gray-800 dark:text-gray-100 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#2874f0] focus:border-transparent disabled:opacity-50 transition-all"
+                            />
+                          </div>
+                        )}
+                      </div>
+                      {!editingPhone ? (
+                        <button
+                          onClick={handlePhoneEdit}
+                          className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 hover:bg-blue-50 dark:hover:bg-blue-950/30 flex items-center justify-center transition-colors cursor-pointer group"
+                          title="Edit phone number"
+                        >
+                          <Pencil className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#2874f0] transition-colors" />
+                        </button>
+                      ) : (
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            onClick={handlePhoneSave}
+                            disabled={phoneSaving || phoneInput.length < 10}
+                            className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 flex items-center justify-center transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                            title="Save"
+                          >
+                            {phoneSaving ? (
+                              <Loader2 className="w-3.5 h-3.5 text-emerald-600 animate-spin" />
+                            ) : (
+                              <Check className="w-3.5 h-3.5 text-emerald-600" />
+                            )}
+                          </button>
+                          <button
+                            onClick={handlePhoneCancel}
+                            disabled={phoneSaving}
+                            className="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-950/30 hover:bg-red-100 dark:hover:bg-red-900/40 flex items-center justify-center transition-colors cursor-pointer disabled:opacity-40"
+                            title="Cancel"
+                          >
+                            <X className="w-3.5 h-3.5 text-red-500" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                    {phoneError && (
+                      <p className="text-xs text-red-500 font-medium mt-2 ml-13 pl-0.5">
+                        {phoneError}
+                      </p>
+                    )}
+                  </div>
                 </div>
               </motion.div>
 

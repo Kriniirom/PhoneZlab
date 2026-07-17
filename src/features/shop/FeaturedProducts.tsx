@@ -54,7 +54,7 @@ export function FeaturedProducts() {
   // Show 8 lightweight skeleton placeholders while loading to prevent CLS
   if (loading) {
     return (
-      <section className="bg-white shadow-sm mt-4 mx-4 rounded-sm p-4">
+      <section className="bg-white shadow-sm mt-4 mx-2 sm:mx-4 rounded-sm p-2 sm:p-4">
         <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-4">
           <div className="flex items-center gap-3">
             <TrendingUp className="text-red-500 w-6 h-6 animate-pulse" />
@@ -63,7 +63,7 @@ export function FeaturedProducts() {
           <div className="w-24 h-4 bg-gray-100 animate-pulse rounded"></div>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4">
           {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
             <div key={i} className="fk-card h-full flex flex-col bg-white animate-pulse">
               <div className="aspect-square bg-gray-100 w-full mb-3 rounded-sm"></div>
@@ -85,7 +85,7 @@ export function FeaturedProducts() {
   }
 
   return (
-    <section className="bg-white shadow-sm mt-4 mx-4 rounded-sm p-4">
+    <section className="bg-white shadow-sm mt-4 mx-2 sm:mx-4 rounded-sm p-2 sm:p-4">
       <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-4">
         <div className="flex items-center gap-3 font-semibold">
           <TrendingUp className="text-red-500 w-6 h-6" />
@@ -96,7 +96,7 @@ export function FeaturedProducts() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}

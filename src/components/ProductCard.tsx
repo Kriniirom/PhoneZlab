@@ -27,9 +27,6 @@ export function ProductCard({ product }: ProductCardProps) {
       <div className="fk-card h-full flex flex-col bg-white">
 
         <div className="relative aspect-square mb-3 bg-gray-50 flex items-center justify-center p-0 overflow-hidden w-full">
-          <div className="absolute top-2 left-2 bg-[#2874f0] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm flex items-center gap-1 z-10 shadow-sm">
-            ASSURED <span className="text-white">+</span>
-          </div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={imageUrl}

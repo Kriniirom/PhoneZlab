@@ -36,7 +36,7 @@ export function ProductSection({
   const IconComponent = IconMap[iconName];
 
   return (
-    <section className="bg-white shadow-sm mt-4 mx-4 rounded-sm p-4">
+    <section className="bg-white shadow-sm mt-4 mx-2 sm:mx-4 rounded-sm p-2 sm:p-4">
       {!hideHeader && (
         <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-4">
           <div className="flex flex-col gap-0.5">
@@ -56,7 +56,7 @@ export function ProductSection({
         </div>
       )}
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}

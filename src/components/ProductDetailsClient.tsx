@@ -519,7 +519,7 @@ export function ProductDetailsClient({ product, relatedProducts = [], initialRev
         {relatedProducts.length > 0 && (
           <div className="mt-8 bg-white p-6 rounded-sm shadow-sm">
             <h2 className="text-xl font-bold text-gray-900 mb-5">You may also like</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
               {relatedProducts.slice(0, 4).map((relProduct) => {
                 const relPrice = parseFloat(relProduct.variants.edges[0]?.node.price.amount || "0");
                 const relImg = relProduct.featuredImage?.url || defaultImage;

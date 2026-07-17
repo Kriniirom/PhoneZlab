@@ -131,7 +131,8 @@ export default function ProfilePage() {
       router.replace("/login");
       return;
     }
-    const loadProfile = async () => {
+    const loadProfile = async (silent = false) => {
+      if (!silent) setLoading(true);
       try {
         const data = await fetchCustomerProfile(token);
         if (data && data.customer) {
@@ -141,19 +142,27 @@ export default function ProfilePage() {
             firstName: cust.firstName || "",
             lastName: cust.lastName || "",
             email: cust.emailAddress?.emailAddress || "",
-            phone: cust.phoneNumber?.phoneNumber || "",
+            phone: cust.phoneNumber?.phoneNumber || cust.defaultAddress?.phoneNumber || "",
             orders: orderNodes,
           });
         } else {
           throw new Error("No customer details returned from Shopify.");
         }
       } catch (err: any) {
-        setError(err.message || "Session expired. Please sign in again.");
+        if (!silent) setError(err.message || "Session expired. Please sign in again.");
       } finally {
-        setLoading(false);
+        if (!silent) setLoading(false);
       }
     };
     loadProfile();
+
+    const handleFocus = () => {
+      loadProfile(true);
+    };
+    window.addEventListener("focus", handleFocus);
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+    };
   }, [router]);
 
   const getInitials = () => {

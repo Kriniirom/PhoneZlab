@@ -209,6 +209,9 @@ export interface CustomerProfileData {
     phoneNumber?: {
       phoneNumber: string;
     };
+    defaultAddress?: {
+      phoneNumber?: string;
+    } | null;
     orders: OrderConnection;
   } | null;
 }
@@ -385,6 +388,9 @@ export async function fetchCustomerProfile(token: string): Promise<CustomerProfi
         phoneNumber {
           phoneNumber
         }
+        defaultAddress {
+          phoneNumber
+        }
         orders(first: 20) {
           edges {
             node {
@@ -435,9 +441,12 @@ export async function fetchCustomerProfile(token: string): Promise<CustomerProfi
 
   const response = await fetch(`https://shopify.com/${shopId}/account/customer/api/${API_VERSION}/graphql`, {
     method: 'POST',
+    cache: 'no-store',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': token, // RAW token directly, no "Bearer " prefix
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache',
     },
     body: JSON.stringify({ query }),
   });

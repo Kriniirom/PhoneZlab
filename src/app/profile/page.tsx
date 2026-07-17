@@ -319,7 +319,7 @@ export default function ProfilePage() {
                         <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">{row.label}</p>
                         <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 mt-0.5 truncate">{row.value}</p>
                       </div>
-                      <span className="text-xs text-[#2874f0] opacity-0 group-hover:opacity-100 transition-opacity font-bold flex items-center gap-1 mr-1">
+                      <span className="text-xs text-[#2874f0] font-bold flex items-center gap-1 mr-1">
                         Edit <ExternalLink className="w-3 h-3" />
                       </span>
                       <ChevronRight className="w-4 h-4 text-gray-300 dark:text-gray-600 flex-shrink-0" />
@@ -339,37 +339,12 @@ export default function ProfilePage() {
                         <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Phone Number</p>
                         <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 mt-0.5 truncate">{profile?.phone || "Not provided"}</p>
                       </div>
-                      <span className="text-xs text-[#2874f0] opacity-0 group-hover:opacity-100 transition-opacity font-bold flex items-center gap-1 mr-1">
+                      <span className="text-xs text-[#2874f0] font-bold flex items-center gap-1 mr-1">
                         Edit <ExternalLink className="w-3 h-3" />
                       </span>
                       <ChevronRight className="w-4 h-4 text-gray-300 dark:text-gray-600 flex-shrink-0" />
                     </a>
                   </div>
-              </motion.div>
-
-              {/* Shopify Security Notice */}
-              <motion.div
-                variants={itemVariants}
-                className="bg-gray-50 dark:bg-white/5 rounded-2xl px-5 py-4 border border-dashed border-gray-200 dark:border-white/10 flex items-start gap-3"
-              >
-                <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <ShieldCheck className="w-4 h-4 text-blue-500" />
-                </div>
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Security Setting</p>
-                  <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mt-0.5">Secure Account Management</p>
-                  <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5 leading-relaxed">
-                    Phone number and login credentials are encrypted and verified through your secure Shopify ID. To modify your security settings or change your contact details, please update them directly in your{" "}
-                    <a
-                      href={`https://shopify.com/${process.env.NEXT_PUBLIC_SHOPIFY_CUSTOMER_ACCOUNT_SHOP_ID || "84050804957"}/account/profile`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[#2874f0] hover:underline font-semibold"
-                    >
-                      Shopify Customer Account portal
-                    </a>.
-                  </p>
-                </div>
               </motion.div>
 
               {/* Delivery Hint */}

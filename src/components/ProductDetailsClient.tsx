@@ -332,12 +332,6 @@ export function ProductDetailsClient({ product, relatedProducts = [], initialRev
                 </button>
               </div>
 
-              {/* Assured text and quick benefits */}
-              <div className="mt-4 text-xs text-gray-500 flex justify-between px-2 pt-2 border-t border-gray-100">
-                <span className="flex items-center gap-1.5"><Truck className="w-4 h-4 text-[#2874f0]" /> Free Delivery</span>
-                <span className="flex items-center gap-1.5"><RotateCcw className="w-4 h-4 text-[#2874f0]" /> 7 Days Replacement</span>
-                <span className="flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-[#2874f0]" /> 1 Year Warranty</span>
-              </div>
 
             </div>
           </div>

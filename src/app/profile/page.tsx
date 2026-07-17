@@ -305,7 +305,13 @@ export default function ProfilePage() {
                     { icon: User, label: "Last Name", value: profile?.lastName || "Not provided" },
                     { icon: Mail, label: "Email Address", value: profile?.email || "Not provided" },
                   ].map((row, i) => (
-                    <div key={i} className="flex items-center gap-4 px-5 py-4">
+                    <a
+                      key={i}
+                      href={`https://shopify.com/${process.env.NEXT_PUBLIC_SHOPIFY_CUSTOMER_ACCOUNT_SHOP_ID || "84050804957"}/account/profile`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer group"
+                    >
                       <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/40 flex items-center justify-center flex-shrink-0">
                         <row.icon className="w-4 h-4 text-[#2874f0]" />
                       </div>
@@ -313,11 +319,19 @@ export default function ProfilePage() {
                         <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">{row.label}</p>
                         <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 mt-0.5 truncate">{row.value}</p>
                       </div>
+                      <span className="text-xs text-[#2874f0] opacity-0 group-hover:opacity-100 transition-opacity font-bold flex items-center gap-1 mr-1">
+                        Edit <ExternalLink className="w-3 h-3" />
+                      </span>
                       <ChevronRight className="w-4 h-4 text-gray-300 dark:text-gray-600 flex-shrink-0" />
-                    </div>
+                    </a>
                   ))}
 
-                    <div className="flex items-center gap-4 px-5 py-4">
+                    <a
+                      href={`https://shopify.com/${process.env.NEXT_PUBLIC_SHOPIFY_CUSTOMER_ACCOUNT_SHOP_ID || "84050804957"}/account/profile`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer group"
+                    >
                       <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/40 flex items-center justify-center flex-shrink-0">
                         <PhoneIcon className="w-4 h-4 text-[#2874f0]" />
                       </div>
@@ -325,8 +339,11 @@ export default function ProfilePage() {
                         <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Phone Number</p>
                         <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 mt-0.5 truncate">{profile?.phone || "Not provided"}</p>
                       </div>
+                      <span className="text-xs text-[#2874f0] opacity-0 group-hover:opacity-100 transition-opacity font-bold flex items-center gap-1 mr-1">
+                        Edit <ExternalLink className="w-3 h-3" />
+                      </span>
                       <ChevronRight className="w-4 h-4 text-gray-300 dark:text-gray-600 flex-shrink-0" />
-                    </div>
+                    </a>
                   </div>
               </motion.div>
 
@@ -342,7 +359,15 @@ export default function ProfilePage() {
                   <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Security Setting</p>
                   <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mt-0.5">Secure Account Management</p>
                   <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5 leading-relaxed">
-                    Phone number and login credentials are encrypted and verified through your secure Shopify ID. To modify your security settings or change your contact details, please update them directly in your Shopify Customer Account portal.
+                    Phone number and login credentials are encrypted and verified through your secure Shopify ID. To modify your security settings or change your contact details, please update them directly in your{" "}
+                    <a
+                      href={`https://shopify.com/${process.env.NEXT_PUBLIC_SHOPIFY_CUSTOMER_ACCOUNT_SHOP_ID || "84050804957"}/account/profile`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#2874f0] hover:underline font-semibold"
+                    >
+                      Shopify Customer Account portal
+                    </a>.
                   </p>
                 </div>
               </motion.div>

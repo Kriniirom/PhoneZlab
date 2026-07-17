@@ -106,10 +106,6 @@ export function Footer() {
           </span>
         </div>
 
-        {/* Tech Attributions */}
-        <div className="text-xs text-gray-400">
-          Built with Shopify & Next.js
-        </div>
       </div>
     </footer>
   );

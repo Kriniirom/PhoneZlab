@@ -37,7 +37,7 @@ export function FeaturedProducts() {
         const data = await getPersonalizedRecommendationsAction({
           recentSearches,
           recentlyViewed,
-          limit: 4,
+          limit: 8,
         });
 
         setProducts(data);
@@ -51,7 +51,7 @@ export function FeaturedProducts() {
     loadRecommendations();
   }, []);
 
-  // Show 4 lightweight skeleton placeholders while loading to prevent CLS
+  // Show 8 lightweight skeleton placeholders while loading to prevent CLS
   if (loading) {
     return (
       <section className="bg-white shadow-sm mt-4 mx-4 rounded-sm p-4">
@@ -64,7 +64,7 @@ export function FeaturedProducts() {
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map((i) => (
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
             <div key={i} className="fk-card h-full flex flex-col bg-white animate-pulse">
               <div className="aspect-square bg-gray-100 w-full mb-3 rounded-sm"></div>
               <div className="px-3 pb-3 space-y-2 flex-grow">

@@ -11,6 +11,7 @@ interface ProductSectionProps {
   products: ShopifyProduct[];
   iconName?: "Sparkles" | "Flame" | "Tag" | "TrendingUp" | "Home";
   iconColorClass?: string;
+  hideHeader?: boolean;
 }
 
 const IconMap = {
@@ -28,6 +29,7 @@ export function ProductSection({
   products,
   iconName = "Home",
   iconColorClass = "text-blue-500",
+  hideHeader = false,
 }: ProductSectionProps) {
   if (products.length === 0) return null;
 
@@ -35,22 +37,24 @@ export function ProductSection({
 
   return (
     <section className="bg-white shadow-sm mt-4 mx-4 rounded-sm p-4">
-      <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-4">
-        <div className="flex flex-col gap-0.5">
-          <div className="flex items-center gap-3 font-semibold">
-            {IconComponent && <IconComponent className={`w-6 h-6 ${iconColorClass}`} />}
-            <h2 className="text-xl md:text-2xl font-bold text-gray-900">{title}</h2>
+      {!hideHeader && (
+        <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-4">
+          <div className="flex flex-col gap-0.5">
+            <div className="flex items-center gap-3 font-semibold">
+              {IconComponent && <IconComponent className={`w-6 h-6 ${iconColorClass}`} />}
+              <h2 className="text-xl md:text-2xl font-bold text-gray-900">{title}</h2>
+            </div>
+            {subtitle && (
+              <p className="text-xs text-gray-500 font-medium md:pl-9 pl-0">
+                {subtitle}
+              </p>
+            )}
           </div>
-          {subtitle && (
-            <p className="text-xs text-gray-500 font-medium md:pl-9 pl-0">
-              {subtitle}
-            </p>
-          )}
+          <Link href={viewAllHref} className="text-[#2874f0] font-bold text-sm hover:underline shrink-0">
+            View All
+          </Link>
         </div>
-        <Link href={viewAllHref} className="text-[#2874f0] font-bold text-sm hover:underline shrink-0">
-          View All
-        </Link>
-      </div>
+      )}
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {products.map((product) => (

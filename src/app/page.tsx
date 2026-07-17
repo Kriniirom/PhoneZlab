@@ -38,6 +38,7 @@ export default async function HomePage() {
             products={products}
             iconName="Home"
             iconColorClass="text-[#2874f0]"
+            hideHeader={true}
           />
         )}
       </div>

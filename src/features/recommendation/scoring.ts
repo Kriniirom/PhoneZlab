@@ -1,11 +1,14 @@
+// Import Shopify Product type definitions.
 import type { ShopifyProduct } from "@/types/shopify";
+// Import search tracking types for previously viewed items.
 import type { RecentlyViewedProduct } from "@/features/search/tracking/recentlyViewed";
 
+// Interface defining arguments passed to the recommendation ranking engine.
 export interface RankRecommendationsParams {
-  candidateProducts: ShopifyProduct[];
-  recentSearches: string[];
-  recentlyViewed: RecentlyViewedProduct[];
-  currentProductId?: string | null;
+  candidateProducts: ShopifyProduct[]; // Pool of candidate items fetched from Shopify
+  recentSearches: string[];            // List of raw text strings searched by the user recently
+  recentlyViewed: RecentlyViewedProduct[]; // Chronological list of items browsed by user
+  currentProductId?: string | null;    // Active product ID (to exclude from recommendations)
 }
 
 export interface ScoredProduct {
@@ -131,8 +134,10 @@ export function rankRecommendations({
     });
   }
 
-  // Sort candidate products from highest to lowest recommendation score
+  // Sort products based on computed recommendation score in descending order (highest score first).
+  // This ranks the most relevant matches (based on recent searches and viewed items) at the top of the list.
   scored.sort((a, b) => b.score - a.score);
 
+  // Return the raw ShopifyProduct records extracted from the sorted wrapper objects.
   return scored.map((item) => item.product);
 }

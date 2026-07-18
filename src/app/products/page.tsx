@@ -1,18 +1,29 @@
+// Import the API call for reading products from Shopify.
 import { getProducts } from "@/features/product/api";
+// Import Next.js Metadata type.
 import type { Metadata } from "next";
+// Import Shopify product structure interface.
 import type { ShopifyProduct } from "@/types/shopify";
+// Import SEO helpers for rendering JSON-LD structure metadata and page meta tags.
 import { generatePageMetadata, getBreadcrumbSchema } from "@/utils/seo";
+// Import the component to insert JSON-LD data structures directly into the HTML header.
 import { StructuredData } from "@/components/StructuredData";
+// Import client filter shell that filters active listing products dynamically based on category dropdown selection.
 import { CategoryFilterShell } from "@/features/product/CategoryFilterShell";
+// Import Suspense component for Next.js async chunk resolution boundaries.
 import { Suspense } from "react";
+// Import Link component for client-side routing.
 import Link from "next/link";
 
+// Generate SEO meta tags for search indexers mapping the canonical path `/products`.
 export const metadata: Metadata = generatePageMetadata({
   title: "All Products",
   description: "Browse all premium luxury accessories.",
   canonicalPath: "/products",
 });
 
+// Utility to parse URL search parameters into Shopify Storefront API compatible SortKeys and direction.
+// Maps frontend custom route parameters to database query properties.
 function parseSortParam(sort: string, rev: string): { sortKey?: string; reverse?: boolean } {
   switch (sort) {
     case "PRICE":        return { sortKey: "PRICE",        reverse: rev === "true" };
@@ -25,10 +36,12 @@ function parseSortParam(sort: string, rev: string): { sortKey?: string; reverse?
 export default async function ProductsPage(props: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+  // Extract and resolve the raw string values for sorting parameters from searchParams.
   const searchParams = await props.searchParams;
   const sort    = typeof searchParams.sort    === "string" ? searchParams.sort    : "";
   const reverse = typeof searchParams.reverse === "string" ? searchParams.reverse : "";
 
+  // Parse parameters to obtain the correct database-level key and sort order direction.
   const { sortKey, reverse: rev } = parseSortParam(sort, reverse);
 
   let products: ShopifyProduct[] = [];

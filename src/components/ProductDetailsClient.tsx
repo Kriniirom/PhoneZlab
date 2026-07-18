@@ -1,7 +1,10 @@
 "use client";
 
+// Import react hooks for handling component states, tracking changes, and memoizing variant selections.
 import React, { useState, useEffect, useMemo } from "react";
+// Import typescript types for Shopify product and variant objects.
 import type { ShopifyProduct, ShopifyVariant } from "@/types/shopify";
+// Import standard SVG icons for UI actions.
 import { 
   ShoppingBag, 
   Zap, 
@@ -18,11 +21,17 @@ import {
   Minus,
   Info
 } from "lucide-react";
+// Import cart state modifications for adding items or initiating instant buy-now checkout flows.
 import { createCartAction, addCartItemAction } from "@/features/cart/actions";
+// Import the custom offers component mapping product tags/prices to active promotions.
 import { ProductOffers } from "./ProductOffers";
+// Import recently viewed tracking logic to save browsed products to localStorage.
 import { trackRecentlyViewed } from "@/features/search/tracking/recentlyViewed";
+// Import reviews action to load rating lists.
 import { getProductReviewsAction } from "@/features/reviews/actions";
+// Import display component for review lists.
 import { ProductReviews } from "./ProductReviews";
+// Import review data type interfaces.
 import type { JudgemeReviewsData } from "@/features/reviews/api";
 
 interface ProductDetailsClientProps {
@@ -32,6 +41,7 @@ interface ProductDetailsClientProps {
 }
 
 export function ProductDetailsClient({ product, relatedProducts = [], initialReviewsData }: ProductDetailsClientProps) {
+  // Store dynamic reviews data. Default structure is applied if server-side render has none.
   const [reviewsData, setReviewsData] = useState<JudgemeReviewsData>(() => {
     return initialReviewsData || {
       averageRating: null,
@@ -41,6 +51,7 @@ export function ProductDetailsClient({ product, relatedProducts = [], initialRev
     };
   });
 
+  // Dynamically load product reviews from judge.me API if not pre-provided by server context.
   useEffect(() => {
     if (initialReviewsData) {
       setReviewsData(initialReviewsData);
@@ -63,7 +74,8 @@ export function ProductDetailsClient({ product, relatedProducts = [], initialRev
   // Initial State: Find the first available variant, or fallback to the first variant
   const initialVariant = variants.find((v) => v.availableForSale) || variants[0];
 
-  // Set up selected options state based on initial variant
+  // Set up selected options state based on the initial variant.
+  // Pre-populates default size/color values for variant buttons to prevent unselected states.
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>(() => {
     const opts: Record<string, string> = {};
     if (initialVariant) {
@@ -91,7 +103,8 @@ export function ProductDetailsClient({ product, relatedProducts = [], initialRev
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastType, setToastType] = useState<"success" | "error">("success");
 
-  // Hook to select matching variant whenever selected options change
+  // Hook to select matching variant whenever selected options change.
+  // Loops through all product variants to find the unique item that matches the chosen combination of parameters (size, color, etc.).
   useEffect(() => {
     const matchingVariant = variants.find((variant) => {
       return variant.selectedOptions.every((opt) => {

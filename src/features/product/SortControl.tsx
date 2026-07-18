@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useRef, useEffect, useState } from "react";
 import { ChevronDown, Check } from "lucide-react";
 
+// Define the client-facing sort options mapping to Shopify Storefront API SortKeys and reverse query configurations.
 const SORT_OPTIONS = [
   { label: "Featured",           sortKey: undefined,       reverse: undefined },
   { label: "Price: Low to High", sortKey: "PRICE",         reverse: false     },
@@ -12,6 +13,8 @@ const SORT_OPTIONS = [
   { label: "Best Selling",       sortKey: "BEST_SELLING",  reverse: false     },
 ] as const;
 
+// Helper to determine the active readable label matching the current URL query parameters.
+// Compares stringified sort keys and boolean reverse parameters from URL with SORT_OPTIONS definitions.
 function getActiveLabel(sort: string, rev: string): string {
   const found = SORT_OPTIONS.find(
     (o) =>
@@ -27,6 +30,7 @@ export function SortControl() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
+  // Extract sorting query params from URL state to identify the currently active sort configuration.
   const currentSort = searchParams.get("sort") ?? "";
   const currentRev  = searchParams.get("reverse") ?? "";
   const activeLabel = getActiveLabel(currentSort, currentRev);
@@ -49,6 +53,8 @@ export function SortControl() {
     return () => document.removeEventListener("keydown", handler);
   }, []);
 
+  // Handles updating the browser's URL search parameters to trigger Next.js route refresh 
+  // and load new products matching the selected sorting criteria.
   function select(sortKey: string | undefined, reverse: boolean | undefined) {
     const params = new URLSearchParams();
     if (sortKey)               params.set("sort",    sortKey);

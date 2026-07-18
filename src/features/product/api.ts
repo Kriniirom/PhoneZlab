@@ -9,9 +9,11 @@ import { shopifyFetch } from '@/lib/shopify/graphql';
 import { getProductsQuery, getProductByHandleQuery, searchProductsQuery } from '@/graphql/queries/product';
 import type { ShopifyProduct } from '@/types/shopify';
 
+// Fetches product records by forward-passing sorting parameters directly to Shopify's products endpoint.
 export async function getProducts(first: number = 10, sortKey?: string, reverse?: boolean): Promise<ShopifyProduct[]> {
   const res = await shopifyFetch<{ products: { edges: { node: ShopifyProduct }[] } }>({
     query: getProductsQuery,
+    // Pass sortKey (e.g. "PRICE", "CREATED_AT") and reverse flag directly as GraphQL variables
     variables: { first, sortKey, reverse },
   });
   return res.body.products.edges.map(edge => edge.node);
@@ -125,7 +127,9 @@ export async function searchProducts(query: string, first: number = 10): Promise
     return { product, score, originalIndex: index };
   });
 
-  // Sort by score descending, then by original index to preserve Shopify's default order
+  // Sort by calculated search relevance score descending.
+  // If the calculated scores are identical, falls back to sorting by the original index
+  // returned from Shopify to preserve the default search precedence.
   scored.sort((a, b) => {
     if (b.score !== a.score) {
       return b.score - a.score;
@@ -133,6 +137,7 @@ export async function searchProducts(query: string, first: number = 10): Promise
     return a.originalIndex - b.originalIndex;
   });
 
+  // Return only the top 'first' ranked products matching the sliced list.
   return scored.slice(0, first).map(item => item.product);
 }
 

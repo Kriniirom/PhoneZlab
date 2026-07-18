@@ -1,7 +1,10 @@
 "use client";
 
+// Import React hooks for managing local UI state, tracking lifecycle, and memoizing computations.
 import React, { useState, useEffect, useMemo } from "react";
+// Import cart typescript schema definition.
 import type { ShopifyCart } from "@/types/shopify";
+// Import standard UI icons from Lucide library.
 import { 
   ShoppingBag, 
   Trash2, 
@@ -13,7 +16,9 @@ import {
   RotateCcw,
   Tag
 } from "lucide-react";
+// Import Next.js Server Actions for cart updates, line removals, and coupon code modifications.
 import { updateCartItemAction, removeCartItemAction, updateCartDiscountCodesAction } from "@/features/cart/actions";
+// Import helper configuration for mapping valid coupon lists.
 import { parseCouponsFromProduct, CouponOffer } from "@/config/offers";
 
 interface CartClientProps {
@@ -21,6 +26,7 @@ interface CartClientProps {
 }
 
 export function CartClient({ initialCart }: CartClientProps) {
+  // Local state for the cart data (seeded initially by the server load and updated by client actions).
   const [cart, setCart] = useState<ShopifyCart | null>(initialCart);
   const [updatingLineId, setUpdatingLineId] = useState<string | null>(null);
   const [removingLineId, setRemovingLineId] = useState<string | null>(null);
@@ -29,7 +35,8 @@ export function CartClient({ initialCart }: CartClientProps) {
   const [discountError, setDiscountError] = useState<string | null>(null);
   const [showCouponModal, setShowCouponModal] = useState(false);
 
-  // Sync cartId dynamically on mount
+  // Sync cart ID dynamically to both localStorage and browser cookies upon cart state modification.
+  // This allows persistent carts across tabs and ensures server components can fetch the correct cart on page loads.
   useEffect(() => {
     if (cart) {
       localStorage.setItem("shopify_cart_id", cart.id);
@@ -166,6 +173,7 @@ export function CartClient({ initialCart }: CartClientProps) {
     }
   };
 
+  // Setup localized currency formatter for Indian Rupees (INR) or cart currency fallback.
   const currency = cart?.cost.totalAmount.currencyCode || "INR";
   const formatter = new Intl.NumberFormat("en-IN", {
     style: "currency",
@@ -173,10 +181,13 @@ export function CartClient({ initialCart }: CartClientProps) {
     maximumFractionDigits: 0
   });
 
+  // Extract cart line items from edges and filter out any incomplete objects.
   const cartLines = (cart?.lines.edges.map(edge => edge.node) || []).filter(
     line => line?.merchandise?.product && line?.merchandise?.price
   );
 
+  // Parse coupons dynamically from the products currently present in the cart.
+  // Aggregates distinct coupons into a map to prevent duplicates before rendering.
   const availableCoupons = useMemo(() => {
     const map = new Map<string, CouponOffer>();
     cartLines.forEach((line) => {
@@ -188,14 +199,18 @@ export function CartClient({ initialCart }: CartClientProps) {
     return Array.from(map.values());
   }, [cartLines]);
 
+  // Compute total item count in cart.
   const totalQuantity = cartLines.reduce((sum, line) => sum + line.quantity, 0);
   
+  // Compute subtotal using original retail prices (excluding dynamic server discount codes).
   const totalOriginalSubtotal = cartLines.reduce((sum, line) => {
     const price = parseFloat(line.merchandise.price.amount || "0");
     return sum + (price * line.quantity);
   }, 0);
 
+  // Read Shopify's calculated subtotal, or fallback to manual calculation if Shopify's pricing is not resolved yet.
   const shopifySubtotal = cart?.cost?.subtotalAmount ? parseFloat(cart.cost.subtotalAmount.amount) : totalOriginalSubtotal;
+  // Calculate raw discount difference by comparing original retail subtotal vs. Shopify subtotal.
   const discountAmount = Math.max(0, totalOriginalSubtotal - shopifySubtotal);
   const taxAmount = cart?.cost.totalTaxAmount ? parseFloat(cart.cost.totalTaxAmount.amount) : 0;
   const totalAmount = cart?.cost.totalAmount ? parseFloat(cart.cost.totalAmount.amount) : (shopifySubtotal + taxAmount);

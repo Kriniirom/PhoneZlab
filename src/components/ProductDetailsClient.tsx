@@ -18,7 +18,9 @@ import {
   Check,
   Plus,
   Minus,
-  Info
+  Info,
+  Facebook,
+  Copy
 } from "lucide-react";
 // Import cart state modifications for adding items or initiating instant buy-now checkout flows.
 import { createCartAction, addCartItemAction } from "@/features/cart/actions";
@@ -95,6 +97,21 @@ export function ProductDetailsClient({ product, relatedProducts = [], initialRev
   const [activeImageUrl, setActiveImageUrl] = useState<string>(activeVariant?.image?.url || defaultImage);
   const [quantity, setQuantity] = useState(1);
   
+  // Share dropdown state and element reference for click-outside detection
+  const [shareOpen, setShareOpen] = useState(false);
+  const shareRef = React.useRef<HTMLDivElement>(null);
+
+  // Close the share dropdown when clicking outside of it
+  useEffect(() => {
+    function handleOutsideClick(event: MouseEvent) {
+      if (shareRef.current && !shareRef.current.contains(event.target as Node)) {
+        setShareOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, []);
+
   // Loading and notification states
   const [addingToCart, setAddingToCart] = useState(false);
   const [buyingNow, setBuyingNow] = useState(false);
@@ -310,13 +327,78 @@ export function ProductDetailsClient({ product, relatedProducts = [], initialRev
                     ASSURED <span className="text-white">+</span>
                   </div>
                   
-                  <button 
-                    onClick={handleShare} 
-                    className="absolute top-3 right-3 p-2 bg-white rounded-full border border-gray-200 shadow-sm text-gray-400 hover:text-[#2874f0] hover:scale-105 transition-all z-10 cursor-pointer"
-                    aria-label="Share product link"
-                  >
-                    <Share2 className="w-5 h-5 text-gray-500 hover:text-[#2874f0]" />
-                  </button>
+                  <div className="absolute top-3 right-3 z-20" ref={shareRef}>
+                    <button 
+                      onClick={() => setShareOpen(!shareOpen)} 
+                      className="p-2 bg-white rounded-full border border-gray-200 shadow-sm text-gray-400 hover:text-[#2874f0] hover:scale-105 transition-all cursor-pointer flex items-center justify-center"
+                      aria-label="Share product options"
+                    >
+                      <Share2 className="w-5 h-5 text-gray-500 hover:text-[#2874f0]" />
+                    </button>
+                    
+                    {shareOpen && (
+                      <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-30 animate-in fade-in slide-in-from-top-2 duration-150">
+                        <div className="px-3 py-1.5 text-xs font-semibold text-gray-400 border-b border-gray-100 mb-1 select-none">
+                          Share Product
+                        </div>
+                        
+                        {/* WhatsApp Share */}
+                        <a
+                          href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`Check out this ${product.title} on PhoneZlab: ` + (typeof window !== "undefined" ? window.location.href : ""))}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => setShareOpen(false)}
+                          className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer font-medium"
+                        >
+                          <svg className="w-4 h-4 text-[#25D366] fill-current" viewBox="0 0 24 24">
+                            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.5-5.739-1.446L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.863-9.73.001-2.595-1.013-5.035-2.855-6.877-1.843-1.843-4.29-2.858-6.883-2.859-5.441 0-9.87 4.373-9.873 9.737-.001 1.748.468 3.454 1.357 4.965l-.982 3.585 3.69-.97c1.478.807 3.109 1.233 4.808 1.233zM18.106 14.86c-.332-.166-1.966-.97-2.272-1.082-.305-.112-.528-.166-.75.166-.222.334-.86 1.082-1.054 1.303-.194.223-.389.25-.72.083-1.332-.667-2.3-1.15-3.076-2.482-.204-.35.204-.325.584-1.083.063-.125.032-.236-.016-.334-.047-.097-.417-1.002-.57-1.37-.15-.362-.315-.312-.432-.318l-.367-.006c-.125 0-.327.047-.498.234-.171.188-.654.64-.654 1.562 0 .923.67 1.817.764 1.944.094.125 1.319 2.014 3.195 2.825.446.193.794.309 1.066.396.449.142.858.122 1.182.074.36-.054 1.118-.458 1.275-.9.157-.44.157-.818.11-1.03-.047-.212-.172-.33-.504-.496z"/>
+                          </svg>
+                          WhatsApp
+                        </a>
+                        
+                        {/* Twitter / X Share */}
+                        <a
+                          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Check out this ${product.title} on PhoneZlab!`)}&url=${encodeURIComponent(typeof window !== "undefined" ? window.location.href : "")}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => setShareOpen(false)}
+                          className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer font-medium"
+                        >
+                          <svg className="w-4 h-4 text-black fill-current" viewBox="0 0 24 24">
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                          </svg>
+                          Twitter / X
+                        </a>
+                        
+                        {/* Facebook Share */}
+                        <a
+                          href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== "undefined" ? window.location.href : "")}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => setShareOpen(false)}
+                          className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer font-medium"
+                        >
+                          <Facebook className="w-4 h-4 text-[#1877F2]" />
+                          Facebook
+                        </a>
+                        
+                        {/* Copy Link Option */}
+                        <button
+                          onClick={() => {
+                            if (typeof window !== "undefined") {
+                              navigator.clipboard.writeText(window.location.href);
+                              showToast("Link copied to clipboard!");
+                            }
+                            setShareOpen(false);
+                          }}
+                          className="w-full text-left flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer font-medium"
+                        >
+                          <Copy className="w-4 h-4 text-gray-500" />
+                          Copy Link
+                        </button>
+                      </div>
+                    )}
+                  </div>
 
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img 

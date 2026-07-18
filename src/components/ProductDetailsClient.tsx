@@ -13,7 +13,6 @@ import {
   RotateCcw, 
   ShieldCheck, 
   ChevronRight, 
-  Heart, 
   Share2, 
   Tag,
   Check,
@@ -95,13 +94,23 @@ export function ProductDetailsClient({ product, relatedProducts = [], initialRev
   const [activeVariant, setActiveVariant] = useState<ShopifyVariant | undefined>(initialVariant);
   const [activeImageUrl, setActiveImageUrl] = useState<string>(activeVariant?.image?.url || defaultImage);
   const [quantity, setQuantity] = useState(1);
-  const [wishlisted, setWishlisted] = useState(false);
   
   // Loading and notification states
   const [addingToCart, setAddingToCart] = useState(false);
   const [buyingNow, setBuyingNow] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastType, setToastType] = useState<"success" | "error">("success");
+
+  // Copies the current window URL to user clipboard and displays confirmation toast.
+  const handleShare = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      showToast("Product link copied to clipboard!");
+    } catch (err) {
+      console.error("Failed to copy link:", err);
+      showToast("Failed to copy link.", "error");
+    }
+  };
 
   // Hook to select matching variant whenever selected options change.
   // Loops through all product variants to find the unique item that matches the chosen combination of parameters (size, color, etc.).
@@ -302,10 +311,11 @@ export function ProductDetailsClient({ product, relatedProducts = [], initialRev
                   </div>
                   
                   <button 
-                    onClick={() => setWishlisted(!wishlisted)} 
-                    className="absolute top-3 right-3 p-2 bg-white rounded-full border border-gray-200 shadow-sm text-gray-400 hover:text-red-500 hover:scale-105 transition-all z-10 cursor-pointer"
+                    onClick={handleShare} 
+                    className="absolute top-3 right-3 p-2 bg-white rounded-full border border-gray-200 shadow-sm text-gray-400 hover:text-[#2874f0] hover:scale-105 transition-all z-10 cursor-pointer"
+                    aria-label="Share product link"
                   >
-                    <Heart className={`w-5 h-5 ${wishlisted ? "fill-red-500 text-red-500" : ""}`} />
+                    <Share2 className="w-5 h-5 text-gray-500 hover:text-[#2874f0]" />
                   </button>
 
                   {/* eslint-disable-next-line @next/next/no-img-element */}

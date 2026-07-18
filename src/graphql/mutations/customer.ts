@@ -4,6 +4,8 @@
  * Belongs to the GraphQL infrastructure layer.
  */
 
+// GraphQL mutation to exchange customer credentials (email/password) for an authenticated Storefront access token.
+// Allows persistent customer sessions in the checkout environment.
 export const customerLoginMutation = /* GraphQL */ `
   mutation customerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {
     customerAccessTokenCreate(input: $input) {
@@ -20,6 +22,8 @@ export const customerLoginMutation = /* GraphQL */ `
   }
 `;
 
+// GraphQL mutation to register a new user account profile in Shopify.
+// Yields the generated customer record ID on successful creation.
 export const customerRegisterMutation = /* GraphQL */ `
   mutation customerCreate($input: CustomerCreateInput!) {
     customerCreate(input: $input) {

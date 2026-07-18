@@ -4,8 +4,11 @@
  * Belongs to the GraphQL infrastructure layer.
  */
 
+// Import the variantSnippet for displaying line item specifications inside cart nodes.
 import { variantSnippet } from './product';
 
+// Reusable GraphQL fragment defining Shopify's Cart properties returned in cart fetch operations.
+// Maps checkout redirection links, quantities, costs, applied coupon validations, and cart product fields.
 export const cartSnippet = /* GraphQL */ `
   fragment CartSnippet on Cart {
     id

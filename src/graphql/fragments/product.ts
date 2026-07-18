@@ -5,6 +5,8 @@
  * Belongs to the GraphQL infrastructure layer.
  */
 
+// Reusable GraphQL fragment defining core properties of a Shopify Product item.
+// Queries type, vendor, tags, SEO metadata, and custom Shopify metafield definitions.
 export const productSnippet = /* GraphQL */ `
   fragment ProductSnippet on Product {
     id
@@ -38,6 +40,8 @@ export const productSnippet = /* GraphQL */ `
   }
 `;
 
+// Reusable GraphQL fragment mapping detailed variant properties on a ProductVariant type node.
+// Resolves SKU values, stock availability flags, compare-at markup list prices, and variant options.
 export const variantSnippet = /* GraphQL */ `
   fragment VariantSnippet on ProductVariant {
     id

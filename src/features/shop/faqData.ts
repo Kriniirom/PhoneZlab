@@ -90,6 +90,6 @@ export const faqData: FaqItem[] = [
     id: "support-hours",
     category: "Contact",
     question: "What are your customer support hours?",
-    answer: "Our support team is available Monday through Saturday from 9 AM to 6 PM IST. You can reach out via email at support@phonezlab.com."
+    answer: "Our support team is available Monday through Saturday from 9 AM to 6 PM IST. You can reach out via email at support@rushovis.com."
   }
 ];

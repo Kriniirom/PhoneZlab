@@ -1,4 +1,4 @@
-const CACHE_NAME = 'phonezlab-cache-v2';
+const CACHE_NAME = 'rushovis-cache-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/manifest.json',

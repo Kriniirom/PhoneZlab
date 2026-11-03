@@ -1,6 +1,6 @@
 "use client";
 
-const LOCAL_STORAGE_KEY = "phonezlab_recent_searches";
+const LOCAL_STORAGE_KEY = "rushovis_recent_searches";
 
 export function trackRecentSearch(searchTerm: string): void {
   if (typeof window === "undefined" || !searchTerm) return;

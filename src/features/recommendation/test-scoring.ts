@@ -10,7 +10,7 @@ const candidates: any[] = [
     handle: "leather-iphone-15-pro-max-case",
     productType: "Cases",
     tags: ["iphone", "case", "leather", "magsafe"],
-    vendor: "PhoneZlab Premium",
+    vendor: "Rushovis Premium",
     variants: { edges: [{ node: { availableForSale: true, price: { amount: "2999", currencyCode: "INR" }, selectedOptions: [] } }] }
   },
   {

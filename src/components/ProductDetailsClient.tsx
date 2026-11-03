@@ -343,7 +343,7 @@ export function ProductDetailsClient({ product, relatedProducts = [], initialRev
                         
                         {/* WhatsApp Share */}
                         <a
-                          href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`Check out this ${product.title} on PhoneZlab: ` + (typeof window !== "undefined" ? window.location.href : ""))}`}
+                          href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`Check out this ${product.title} on Rushovis: ` + (typeof window !== "undefined" ? window.location.href : ""))}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={() => setShareOpen(false)}
@@ -357,7 +357,7 @@ export function ProductDetailsClient({ product, relatedProducts = [], initialRev
                         
                         {/* Twitter / X Share */}
                         <a
-                          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Check out this ${product.title} on PhoneZlab!`)}&url=${encodeURIComponent(typeof window !== "undefined" ? window.location.href : "")}`}
+                          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Check out this ${product.title} on Rushovis!`)}&url=${encodeURIComponent(typeof window !== "undefined" ? window.location.href : "")}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={() => setShareOpen(false)}
@@ -448,7 +448,7 @@ export function ProductDetailsClient({ product, relatedProducts = [], initialRev
             {/* Title / Header */}
             <div>
               <span className="text-[#878787] text-xs font-semibold uppercase tracking-wider">
-                {product.vendor || "PhoneZlab"}{product.productType ? ` • ${product.productType}` : ""}
+                {product.vendor || "Rushovis"}{product.productType ? ` • ${product.productType}` : ""}
               </span>
               <h1 className="text-xl md:text-2xl font-medium text-gray-900 mt-1 leading-snug">
                 {product.title}

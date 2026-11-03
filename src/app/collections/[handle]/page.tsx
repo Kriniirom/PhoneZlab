@@ -12,7 +12,7 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
   let title = resolvedParams.handle;
-  let description = `Browse the ${resolvedParams.handle} collection at PhoneZlab.`;
+  let description = `Browse the ${resolvedParams.handle} collection at Rushovis.`;
 
   try {
     const collectionData = await getCollection(resolvedParams.handle, 1);

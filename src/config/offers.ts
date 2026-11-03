@@ -14,7 +14,7 @@ export function parseCouponsFromProduct(product: any): CouponOffer[] {
   const coupons: CouponOffer[] = [];
   if (!product) return coupons;
 
-  // 1. Parse from tags (e.g. "coupon:PHONEZLAB10 | 10% OFF | 10% off up to ₹200 | 999")
+  // 1. Parse from tags (e.g. "coupon:RUSHOVIS10 | 10% OFF | 10% off up to ₹200 | 999")
   if (product.tags && Array.isArray(product.tags)) {
     product.tags.forEach((tag: string) => {
       if (tag.startsWith("coupon:")) {

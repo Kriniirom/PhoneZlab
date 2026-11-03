@@ -17,7 +17,7 @@ export function getSiteUrl(): string {
     return `https://${shopifyDomain}`;
   }
   
-  return 'https://phonezlab.com';
+  return 'https://rushovis.com';
 }
 
 interface MetadataOptions {
@@ -37,10 +37,10 @@ interface MetadataOptions {
 export function generatePageMetadata(options: MetadataOptions): Metadata {
   const siteUrl = getSiteUrl();
   const absoluteUrl = `${siteUrl}${options.canonicalPath}`;
-  const defaultTitle = "PhoneZlab | Luxury Accessories";
+  const defaultTitle = "Rushovis | Luxury Accessories";
   const defaultDescription = "Premium luxury accessories and cases for the modern elite.";
   
-  const title = options.title ? `${options.title} | PhoneZlab` : defaultTitle;
+  const title = options.title ? `${options.title} | Rushovis` : defaultTitle;
   const description = options.description || defaultDescription;
   
   const meta: Metadata = {
@@ -52,7 +52,7 @@ export function generatePageMetadata(options: MetadataOptions): Metadata {
       "iphone accessories",
       "luxury phone covers",
       "premium phone skins",
-      "phonezlab"
+      "rushovis"
     ],
     alternates: {
       canonical: absoluteUrl,
@@ -63,7 +63,7 @@ export function generatePageMetadata(options: MetadataOptions): Metadata {
       description,
       url: absoluteUrl,
       type: (options.ogType === 'article' ? 'article' : 'website'),
-      siteName: 'PhoneZlab',
+      siteName: 'Rushovis',
       images: options.imageUrl 
         ? [
             {
@@ -76,7 +76,7 @@ export function generatePageMetadata(options: MetadataOptions): Metadata {
         : [
             {
               url: `${siteUrl}/og-image.png`,
-              alt: 'PhoneZlab Luxury Accessories',
+              alt: 'Rushovis Luxury Accessories',
               width: 1200,
               height: 630,
             }
@@ -102,17 +102,17 @@ export function getOrganizationSchema() {
     "@context": "https://schema.org",
     "@type": "Organization",
     "@id": `${siteUrl}/#organization`,
-    "name": "PhoneZlab",
+    "name": "Rushovis",
     "url": siteUrl,
     "logo": {
       "@type": "ImageObject",
       "url": `${siteUrl}/logo.png`,
-      "caption": "PhoneZlab Logo"
+      "caption": "Rushovis Logo"
     },
     "sameAs": [
-      "https://facebook.com/phonezlab",
-      "https://instagram.com/phonezlab",
-      "https://twitter.com/phonezlab"
+      "https://facebook.com/rushovis",
+      "https://instagram.com/rushovis",
+      "https://twitter.com/rushovis"
     ]
   };
 }
@@ -127,7 +127,7 @@ export function getWebsiteSchema() {
     "@type": "WebSite",
     "@id": `${siteUrl}/#website`,
     "url": siteUrl,
-    "name": "PhoneZlab",
+    "name": "Rushovis",
     "publisher": {
       "@id": `${siteUrl}/#organization`
     },
@@ -173,7 +173,7 @@ export function getProductSchema(product: ShopifyProduct, reviewsData?: JudgemeR
   const variants = product.variants?.edges?.map(edge => edge.node) || [];
   const mainVariant = variants.find(v => v.availableForSale) || variants[0];
   const images = product.images?.edges?.map(edge => edge.node.url) || [];
-  const brandName = product.vendor || 'PhoneZlab';
+  const brandName = product.vendor || 'Rushovis';
 
   const lowPrice = variants.length > 0 
     ? Math.min(...variants.map(v => parseFloat(v.price.amount) || 0)) 
@@ -187,7 +187,7 @@ export function getProductSchema(product: ShopifyProduct, reviewsData?: JudgemeR
     "@type": "Product",
     "@id": `${siteUrl}/products/${product.handle}#product`,
     "name": product.title,
-    "description": product.description || `Buy ${product.title} from PhoneZlab.`,
+    "description": product.description || `Buy ${product.title} from Rushovis.`,
     "image": images.length > 0 ? images : [product.featuredImage?.url || `${siteUrl}/og-image.png`],
     "sku": mainVariant?.sku || product.id,
     "brand": {

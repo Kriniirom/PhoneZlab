@@ -8,7 +8,7 @@ import { generatePageMetadata } from "@/utils/seo";
 // Setup page-level SEO config.
 export const metadata: Metadata = generatePageMetadata({
   title: "Search",
-  description: "Search for premium luxury accessories on PhoneZlab.",
+  description: "Search for premium luxury accessories on Rushovis.",
   canonicalPath: "/search",
 });
 

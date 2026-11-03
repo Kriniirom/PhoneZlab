@@ -22,13 +22,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!product) {
     return {
-      title: "Product Not Found | PhoneZlab",
+      title: "Product Not Found | Rushovis",
     };
   }
 
   return generatePageMetadata({
     title: product.seo.title || product.title,
-    description: product.seo.description || product.description || `Buy ${product.title} from PhoneZlab.`,
+    description: product.seo.description || product.description || `Buy ${product.title} from Rushovis.`,
     canonicalPath: `/products/${product.handle}`,
     imageUrl: product.featuredImage?.url || undefined,
     imageAlt: product.featuredImage?.altText || product.title,

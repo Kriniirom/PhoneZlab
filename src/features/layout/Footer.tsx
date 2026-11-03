@@ -8,7 +8,7 @@ export function Footer() {
         {/* Brand Info Column */}
         <div className="lg:col-span-2 space-y-4">
           <Link href="/" className="text-xl font-bold tracking-tight text-gray-900 hover:text-[#2874f0] transition-colors duration-150">
-            PhoneZlab
+            Rushovis
           </Link>
           <p className="text-sm text-gray-500 max-w-sm leading-relaxed">
             Premium accessories built for modern devices.
@@ -87,7 +87,7 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-6 pt-8 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-6">
         {/* Copyright info */}
         <div className="text-xs text-gray-400">
-          &copy; 2026 PhoneZlab. All rights reserved.
+          &copy; 2026 Rushovis. All rights reserved.
         </div>
 
         {/* Trust Badges */}

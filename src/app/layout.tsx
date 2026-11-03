@@ -16,15 +16,15 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
-    default: "PhoneZlab | Luxury Accessories",
-    template: "%s | PhoneZlab",
+    default: "Rushovis | Luxury Accessories",
+    template: "%s | Rushovis",
   },
   description: "Premium luxury accessories and cases for the modern elite.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "PhoneZlab",
+    title: "Rushovis",
   },
   icons: {
     apple: "/icon-192.png",

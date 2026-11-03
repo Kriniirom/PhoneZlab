@@ -4,7 +4,7 @@
 import type { ShopifyProduct } from "@/types/shopify";
 
 // Key utilized to fetch/save browsed history JSON array in localStorage.
-const LOCAL_STORAGE_KEY = "phonezlab_recently_viewed";
+const LOCAL_STORAGE_KEY = "rushovis_recently_viewed";
 
 export interface RecentlyViewedProduct {
   id: string;

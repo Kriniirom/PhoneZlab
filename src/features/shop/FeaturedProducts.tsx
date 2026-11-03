@@ -20,11 +20,11 @@ export function FeaturedProducts() {
 
         if (typeof window !== "undefined") {
           try {
-            const searches = localStorage.getItem("phonezlab_recent_searches");
+            const searches = localStorage.getItem("rushovis_recent_searches") || localStorage.getItem("phonezlab_recent_searches");
             if (searches) {
               recentSearches = JSON.parse(searches);
             }
-            const viewed = localStorage.getItem("phonezlab_recently_viewed");
+            const viewed = localStorage.getItem("rushovis_recently_viewed") || localStorage.getItem("phonezlab_recently_viewed");
             if (viewed) {
               recentlyViewed = JSON.parse(viewed);
             }

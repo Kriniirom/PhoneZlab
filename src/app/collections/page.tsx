@@ -6,7 +6,7 @@ import { StructuredData } from "@/components/StructuredData";
 
 export const metadata: Metadata = generatePageMetadata({
   title: "Collections",
-  description: "Browse all premium collections from PhoneZlab.",
+  description: "Browse all premium collections from Rushovis.",
   canonicalPath: "/collections",
 });
 

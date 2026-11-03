@@ -35,7 +35,7 @@ export default function FaqPage() {
         {/* Help Center Header */}
         <div className="text-center space-y-3 mb-12">
           <span className="text-xs font-bold uppercase tracking-widest text-[#2874f0]">
-            PhoneZlab Help Center
+            Rushovis Help Center
           </span>
           <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
             Frequently Asked Questions
@@ -107,7 +107,7 @@ export default function FaqPage() {
             </p>
           </div>
           <a
-            href="mailto:support@phonezlab.com"
+            href="mailto:support@rushovis.com"
             className="inline-flex items-center gap-2 bg-[#2874f0] hover:bg-[#1a5ec7] text-white px-6 py-3 rounded-lg text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#2874f0] focus:ring-offset-2 cursor-pointer shadow-sm"
           >
             <Mail className="w-4 h-4" />

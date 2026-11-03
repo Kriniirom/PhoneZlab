@@ -42,10 +42,10 @@ export default function LoginPage() {
     <main className="min-h-[85vh] bg-[#f1f3f6] flex items-center justify-center p-4 md:p-8 relative">
       <div className="bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-4xl flex flex-col md:flex-row min-h-[500px]">
         
-        {/* Left Panel: Brand info / values (Flipkart/PhoneZlap Style) */}
+        {/* Left Panel: Brand info / values (Flipkart/Rushovis Style) */}
         <div className="w-full md:w-2/5 bg-[#2874f0] p-8 text-white flex flex-col justify-between relative">
           <div>
-            <h2 className="text-3xl font-black italic tracking-tight mb-3">PhoneZlap</h2>
+            <h2 className="text-3xl font-black italic tracking-tight mb-3">Rushovis</h2>
             <p className="text-white/80 text-sm font-medium leading-relaxed">
               Unlock a world of premium tech accessories, customized case overlays, and exclusive deals.
             </p>
@@ -73,7 +73,7 @@ export default function LoginPage() {
           </div>
 
           <div className="text-xs text-white/50">
-            © {new Date().getFullYear()} PhoneZlap. All rights reserved.
+            © {new Date().getFullYear()} Rushovis. All rights reserved.
           </div>
           
           {/* Background circles for premium styling */}
@@ -119,7 +119,7 @@ export default function LoginPage() {
           </div>
 
           <p className="text-xs text-gray-400 text-center md:text-left leading-relaxed mt-6">
-            By continuing, you agree to PhoneZlap's{" "}
+            By continuing, you agree to Rushovis's{" "}
             <Link href="/terms" className="text-[#2874f0] underline hover:text-blue-700">Terms of Use</Link> and{" "}
             <Link href="/privacy" className="text-[#2874f0] underline hover:text-blue-700">Privacy Policy</Link>.
           </p>

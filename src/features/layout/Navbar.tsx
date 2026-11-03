@@ -199,11 +199,11 @@ export function Navbar() {
           <Link href="/" className="flex items-center gap-3 select-none group">
             <div className="w-8.5 h-8.5 rounded-lg bg-[#2874f0] flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-[1.03]">
               <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5 text-white stroke-white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M7 8h10l-4.5 4.5" />
-                <path d="M11.5 11.5l-4.5 4H17" />
+                <path d="M7.5 18.5v-13h5.5a3.5 3.5 0 0 1 0 7h-5.5" />
+                <path d="M11.5 12.5l5 6" />
               </svg>
             </div>
-            <span className="text-slate-900 dark:text-white text-xl font-bold tracking-tight">PhoneZlab</span>
+            <span className="text-slate-900 dark:text-white text-xl font-bold tracking-tight">Rushovis</span>
           </Link>
  
           {/* Mobile Right Actions */}

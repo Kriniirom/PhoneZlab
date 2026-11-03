@@ -225,7 +225,7 @@ export async function fetchCustomerProfile(token: string): Promise<CustomerProfi
         firstName: "Irom",
         lastName: "Krinivash",
         emailAddress: {
-          emailAddress: "irom.krinivash@phonezlab.com"
+          emailAddress: "irom.krinivash@rushovis.com"
         },
         phoneNumber: {
           phoneNumber: "+91 9876543210"

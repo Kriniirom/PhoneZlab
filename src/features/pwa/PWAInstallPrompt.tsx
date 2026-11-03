@@ -126,7 +126,7 @@ export function PWAInstallPrompt() {
               <div className="relative h-12 w-12 flex-shrink-0 rounded-xl overflow-hidden shadow-md bg-white p-1 border border-neutral-100 dark:border-neutral-800">
                 <Image
                   src="/icon-192.png"
-                  alt="PhoneZlab App Icon"
+                  alt="Rushovis App Icon"
                   width={40}
                   height={40}
                   className="h-full w-full object-contain"
@@ -135,7 +135,7 @@ export function PWAInstallPrompt() {
               </div>
               <div className="min-w-0">
                 <h4 className="text-sm font-semibold text-neutral-900 dark:text-white truncate">
-                  Install PhoneZlab App {isSimulated && <span className="text-[10px] text-yellow-500 font-mono ml-1">(Demo)</span>}
+                  Install Rushovis App {isSimulated && <span className="text-[10px] text-yellow-500 font-mono ml-1">(Demo)</span>}
                 </h4>
                 <p className="text-xs text-neutral-500 dark:text-neutral-400 truncate">
                   Add to home screen for absolute ease.
